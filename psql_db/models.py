@@ -28,8 +28,8 @@ class AudioDataFile(Base):
     step_count = Column(Integer, nullable=False)
 
     # Relation to 'user' table
-    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
-    user = relationship("User")
+    # user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    # user = relationship("User")
 
     def __repr__(self):
         return f"<AudioDataFile #{self.session_id} >"

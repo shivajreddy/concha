@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     database_name: str
     database_password: str
     database_username: str
+    server_address: str
+    server_port: int
 
     # Get the Environment variables from the .env file
     class Config:
