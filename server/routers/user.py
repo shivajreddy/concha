@@ -1,3 +1,6 @@
+"""
+`user` router handling all routes to /user
+"""
 from fastapi import APIRouter
 
 router = APIRouter(
