@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "user_info"
 
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
@@ -21,7 +21,7 @@ class User(Base):
 
 
 class AudioDataFile(Base):
-    __tablename__ = "audio_data_file"
+    __tablename__ = "audio_data"
     session_id = Column(Integer, primary_key=True, nullable=False)
     ticks = Column(ARRAY(Integer), nullable=False)
     selected_tick = Column(Integer, nullable=False)
