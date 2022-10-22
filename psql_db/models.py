@@ -2,9 +2,8 @@
 SQLAlchemy models representing PSQL tables
 """
 
-from psql_db.database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ARRAY, ForeignKey
-from sqlalchemy.orm import relationship
+from server.database import Base
+from sqlalchemy import Column, Integer, String, ARRAY
 
 
 class User(Base):

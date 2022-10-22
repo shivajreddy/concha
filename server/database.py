@@ -1,6 +1,7 @@
 """
 Driver for PSQL using SQLAlchemy
 Session creator for every request
+This module should be in server, to eliminate circular imports
 """
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base

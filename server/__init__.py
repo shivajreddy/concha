@@ -19,3 +19,8 @@ app = FastAPI(
 # Add routers
 app.include_router(user_router)
 app.include_router(audio_router)
+
+
+@app.get('/')
+def root():
+    return {"Name: ": "concha server"}

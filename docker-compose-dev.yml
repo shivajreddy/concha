@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  server:
+  dev-server:
     build: .
     ports:
       - "8000:8000"
@@ -8,15 +8,15 @@ services:
       - ./:/usr/src/app:ro
     env_file:
       - ./.env
-    command: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload
     depends_on:
       - postgres
 
   postgres:
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=password123
-      - POSTGRES_DB=conchadb
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - postgres-db:/var/lib/postgresql/data
 
