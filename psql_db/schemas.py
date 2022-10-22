@@ -1,13 +1,14 @@
 """
 Schemas/Pydantic models for the PSQL db
 """
-
 from pydantic.main import BaseModel, Extra, Field
+from pydantic import EmailStr
 
 
 # ----------  Schemas related to 'User' model   ----------
 
-class UserBase(BaseModel):
+# Response schema for a single user
+class UserSchema(BaseModel):
     class Config:
         extra = Extra.forbid
         orm_mode = True
@@ -17,6 +18,38 @@ class UserBase(BaseModel):
     email: str
     address: str
     image: str
+
+
+class UserAllSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    all_users: list[UserSchema]
+
+
+class UserNewSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    id: int
+    name: str
+    email: EmailStr
+    address: str
+    image: str
+
+
+# Response schema for a group of users
+class UserResponseSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    id: int
+    name: str
+    email: str
+    address: str
 
 
 # ----------  Schemas related to 'AudioDataFile' model   ----------

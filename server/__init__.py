@@ -23,4 +23,4 @@ app.include_router(audio_router)
 
 @app.get('/')
 def root():
-    return {"Name: ": "concha server"}
+    return {"Name: ": "concha server", "version": "1.0.1", "created by": "Shiva Reddy"}
