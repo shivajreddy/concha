@@ -15,7 +15,7 @@ class UserSchema(BaseModel):
 
     id: int
     name: str
-    email: str
+    email: EmailStr
     address: str
     image: str
 
@@ -40,6 +40,10 @@ class UserNewSchema(BaseModel):
     image: str
 
 
+class EmailBase(BaseModel):
+    email: str
+
+
 # Response schema for a group of users
 class UserResponseSchema(BaseModel):
     class Config:
@@ -48,7 +52,7 @@ class UserResponseSchema(BaseModel):
 
     id: int
     name: str
-    email: str
+    email: EmailStr
     address: str
 
 

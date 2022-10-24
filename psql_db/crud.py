@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from psql_db.models import User, AudioDataFile
 from psql_db.schemas import UserNewSchema
 
+from pydantic import EmailStr
+
 
 # ---------- USER model's services ----------
 
@@ -14,8 +16,18 @@ def get_users(db: Session):
     return users
 
 
-def get_user(db: Session, user_id: int):
-    user = db.query(User).filter(User.id == user_id).first()
+def get_user(db: Session, user_id: int = None, user_email: EmailStr = None):
+    user = None
+    if user_id:
+        user = db.query(User).filter(User.id == user_id).first()
+    elif user_email:
+        user = db.query(User).filter(User.email == user_email).first()
+    return user
+
+
+def get_by_email(db: Session, user_email: str):
+    user = db.query(User).filter(User.email.like(f'%{user_email}%')).all()
+    print("these are all the results", user)
     return user
 
 
