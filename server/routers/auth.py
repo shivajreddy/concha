@@ -55,5 +55,4 @@ def signup(payload: UserNewSchema, db: Session = Depends(get_db)):
     created_user = create_new_user(db=db, user_data=user_payload)
     token_details = create_access_token(
         data={"user_id": created_user.id, "user_email": created_user.email, "is_admin": False})
-    print("this is the fucking token_details", token_details)
     return {"created_user_details": created_user, "token": token_details}
