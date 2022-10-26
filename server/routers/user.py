@@ -23,7 +23,8 @@ router = APIRouter(
 
 
 @router.get('/all', response_model=UserAllSchema, status_code=status.HTTP_200_OK)
-def user_root(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+def user_root(db: Session = Depends(get_db)):
+# def user_root(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     all_users = get_users(db=db)
     return {"all_users": all_users}
 

@@ -16,7 +16,6 @@ router = APIRouter(tags=['Authentication'], prefix='/auth')
 
 
 @router.post('/login', response_model=Token)
-# def login(user_credentials: UserLoginSchema, db: Session = Depends(get_db)):
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     # OAuth2PasswordRequestForm -> {"username" :"", "password":""}
     user = db.query(User).filter(User.email == user_credentials.username).first()
