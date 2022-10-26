@@ -77,6 +77,15 @@ class TokenPayloadSchema(BaseModel):
     is_admin: bool = False
 
 
+class UserNewResponseSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    created_user_details: UserResponseSchema
+    token: str
+
+
 # ----------  Schemas related to 'AudioDataFile' model   ----------
 
 class TickBase(BaseModel):

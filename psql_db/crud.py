@@ -32,7 +32,7 @@ def get_by_email(db: Session, user_email: str):
 
 
 # ---------- INSERT operations
-def create_new_user(user_data: UserRegisterInDB, db: Session):
+def create_new_user(db: Session, user_data: UserRegisterInDB):
     new_user = User(**user_data.dict())
     print("here in crud.py create_new_user func. I got new_user", new_user)
     db.add(new_user)
