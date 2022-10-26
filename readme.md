@@ -14,7 +14,7 @@ Assignment Document : [GoogleDoc](https://docs.google.com/document/d/1Ucla0d4T7y
 Notion Doc: [NotionDoc](https://www.notion.so/shivareddy/Concha-Backend-Engineer-Test-Q-Discussion-93fe3866ca8f49c0bf88654983df8773)  
 Postman Collection : [Postman](https://www.postman.com/blue-comet-93782/workspace/myspace/collection/19132019-dafc3e8a-2e92-48ad-9781-5bdb5c0967e5?action=share&creator=19132019)  
 
-| Stack                         | Technology             |
+| *Stack*                       | *Technology*           | 
 |:----------------------------- |:---------------------- |
 | Backend                       | FastAPI                |
 | Database                      | PSQL                   |
