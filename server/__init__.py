@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from server.routers.user import router as user_router
 from server.routers.audio_data import router as audio_router
+from server.routers.auth import router as auth_router
 
 app = FastAPI(
     title="Concha API 🎧",
@@ -19,6 +20,7 @@ app = FastAPI(
 # Add routers
 app.include_router(user_router)
 app.include_router(audio_router)
+app.include_router(auth_router)
 
 
 @app.get('/')

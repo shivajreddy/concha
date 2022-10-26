@@ -6,14 +6,14 @@ from sqlalchemy.orm import Session
 
 from psql_db.crud import get_user
 from psql_db.schemas import TokenPayloadSchema
+from server.config import settings
 from server.database import get_db
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
-SECRET_KEY = "c7302298d280cda36a778dee6c9beeca3fad4e4ecfdca72b456c8a8916d3ebc6"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):

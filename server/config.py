@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     database_username: str
     server_address: str
     server_port: int
+    secret_key: str
+    algorithm: str
+    access_token_expire_minutes: int
 
     # Get the Environment variables from the .env file
     class Config:
