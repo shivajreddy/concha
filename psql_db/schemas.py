@@ -77,6 +77,11 @@ class TokenPayloadSchema(BaseModel):
     is_admin: bool = False
 
 
+class Token(BaseModel):
+    token: str
+    token_type: str
+
+
 class UserNewResponseSchema(BaseModel):
     class Config:
         extra = Extra.forbid

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from psql_db.crud import create_new_user, get_user
 from psql_db.models import User
-from psql_db.schemas import UserRegisterInDB, UserNewSchema, UserNewResponseSchema
+from psql_db.schemas import UserRegisterInDB, UserNewSchema, UserNewResponseSchema, Token
 
 import uuid
 
@@ -15,7 +15,7 @@ from server.utils import verify_password, hash_password
 router = APIRouter(tags=['Authentication'], prefix='/auth')
 
 
-@router.get('/login')
+@router.post('/login', response_model=Token)
 # def login(user_credentials: UserLoginSchema, db: Session = Depends(get_db)):
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     # OAuth2PasswordRequestForm -> {"username" :"", "password":""}

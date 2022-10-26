@@ -10,6 +10,8 @@ from sqlalchemy.orm import Session
 from server.database import get_db
 from psql_db.schemas import UserNewSchema, UserAllSchema, UserSchema, UserResponseSchema, EmailBase, UserRegisterInDB
 
+from server.oauth2 import get_current_user
+
 # crud Utils
 from psql_db.crud import get_users, create_new_user, get_user, get_by_email
 
@@ -21,7 +23,7 @@ router = APIRouter(
 
 
 @router.get('/all', response_model=UserAllSchema, status_code=status.HTTP_200_OK)
-def user_root(db: Session = Depends(get_db)):
+def user_root(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     all_users = get_users(db=db)
     return {"all_users": all_users}
 
