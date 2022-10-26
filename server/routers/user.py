@@ -34,7 +34,7 @@ def find_user_by_email(given_query: EmailBase, request: Request, db: Session = D
 
 
 @router.get('/{user_id}', response_model=UserSchema, status_code=status.HTTP_200_OK)
-def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
+def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     if not user:
         raise HTTPException(status_code=400, detail=f"No user with id:{user_id}")

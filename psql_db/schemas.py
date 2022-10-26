@@ -70,6 +70,13 @@ class UserResponseSchema(BaseModel):
     image: str
 
 
+# ---------- Authorization schema ----------
+class TokenPayloadSchema(BaseModel):
+    user_id: str | None
+    user_email: str | None
+    is_admin: bool = False
+
+
 # ----------  Schemas related to 'AudioDataFile' model   ----------
 
 class TickBase(BaseModel):

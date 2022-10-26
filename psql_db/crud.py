@@ -16,7 +16,7 @@ def get_users(db: Session):
     return users
 
 
-def get_user(db: Session, user_id: int = None, user_email: EmailStr = None):
+def get_user(db: Session, user_id: str = None, user_email: EmailStr = None):
     user = None
     if user_id:
         user = db.query(User).filter(User.id == user_id).first()
