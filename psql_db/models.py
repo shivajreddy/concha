@@ -7,11 +7,12 @@ from sqlalchemy import Column, Integer, String, ARRAY
 
 
 class User(Base):
-    __tablename__ = "user_info"
+    __tablename__ = "user_data"
 
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(String, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
     address = Column(String, nullable=False)
     image = Column(String, nullable=False)
 

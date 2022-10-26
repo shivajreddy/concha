@@ -5,7 +5,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./:/usr/src/app:ro
+      - ./:/usr/src/app
     env_file:
       - ./.env
     command: uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload

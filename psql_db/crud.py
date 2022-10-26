@@ -3,7 +3,7 @@ This module contains all the CRUD utils
 """
 from sqlalchemy.orm import Session
 from psql_db.models import User, AudioDataFile
-from psql_db.schemas import UserNewSchema
+from psql_db.schemas import UserNewSchema, UserRegisterInDB
 
 from pydantic import EmailStr
 
@@ -27,20 +27,18 @@ def get_user(db: Session, user_id: int = None, user_email: EmailStr = None):
 
 def get_by_email(db: Session, user_email: str):
     user = db.query(User).filter(User.email.like(f'%{user_email}%')).all()
-    print("these are all the results", user)
+
     return user
 
 
 # ---------- INSERT operations
-def create_new_user(user_data: UserNewSchema, db: Session):
-    print(user_data.dict())
-    # new_post = Post(**post.dict())
-    # new_post = Post(id=post.id, title=post.title, content=post.title, published=post.published)
+def create_new_user(user_data: UserRegisterInDB, db: Session):
     new_user = User(**user_data.dict())
-    print(new_user)
+    print("here in crud.py create_new_user func. I got new_user", new_user)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
     return new_user
 
 

@@ -13,7 +13,7 @@ class UserSchema(BaseModel):
         extra = Extra.forbid
         orm_mode = True
 
-    id: int
+    id: str
     name: str
     email: EmailStr
     address: str
@@ -33,15 +33,28 @@ class UserNewSchema(BaseModel):
         extra = Extra.forbid
         orm_mode = True
 
-    id: int
+    # id: int
     name: str
     email: EmailStr
+    password: str
+    address: str
+    image: str
+
+
+class UserRegisterInDB(BaseModel):
+    class Config:
+        orm_mode = True
+
+    id: str | None = None
+    name: str
+    email: EmailStr
+    hashed_password: str | None = None
     address: str
     image: str
 
 
 class EmailBase(BaseModel):
-    email: str
+    email: EmailStr
 
 
 # Response schema for a group of users
@@ -50,10 +63,11 @@ class UserResponseSchema(BaseModel):
         extra = Extra.forbid
         orm_mode = True
 
-    id: int
+    id: str
     name: str
     email: EmailStr
     address: str
+    image: str
 
 
 # ----------  Schemas related to 'AudioDataFile' model   ----------
