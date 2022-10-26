@@ -25,10 +25,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"No user found with email:{user_credentials.username}")
 
-    print("comparing")
-    print("plain given password = ", user_credentials.password)
-    print("hashed password = ", user.password)
-    if not verify_password(plain_password=user_credentials.password, hashed_password=user.password):
+    if not verify_password(plain_password=user_credentials.password, hashed_password=user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Wrong password"
         )
