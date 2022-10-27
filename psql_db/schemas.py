@@ -19,6 +19,7 @@ class UserSchema(BaseModel):
     email: EmailStr
     address: str
     image: str
+    # is_admin: bool
 
 
 class UserAllSchema(BaseModel):

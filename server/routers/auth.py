@@ -29,8 +29,15 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
             status_code=status.HTTP_403_FORBIDDEN, detail="Wrong password"
         )
 
+    # data = {"user_id": user.id, "is_admin": False}
+    data = {"user_id": user.id, "user_email": user.email, "is_admin": False}
+
+    # Make only admin@concha.com as the admin
+    if user.email == 'admin@concha.com':
+        data["is_admin"] = True
+
     # create a token
-    access_token = create_access_token(data={"user_id": user.id, "is_admin": False})
+    access_token = create_access_token(data=data)
 
     return {"token": access_token, "token_type": "bearer"}
 
@@ -51,8 +58,14 @@ def signup(payload: UserNewSchema, db: Session = Depends(get_db)):
     hashed_password = hash_password(payload.password)
     user_payload.hashed_password = hashed_password
 
-    created_user = create_new_user(db=db, user_data=user_payload)
-    token_details = create_access_token(
-        data={"user_id": created_user.id, "user_email": created_user.email, "is_admin": False})
-    return {"created_user_details": created_user, "token": token_details}
+    data = {"user_id": user_payload.id, "user_email": user_payload.email, "is_admin": False}
 
+    # Make only admin@concha.com as the admin
+    if user_payload.email == 'admin@concha.com':
+        data["is_admin"] = True
+
+    token_details = create_access_token(data=data)
+
+    created_user = create_new_user(db=db, user_data=user_payload)
+
+    return {"created_user_details": created_user, "token": token_details}

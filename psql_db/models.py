@@ -4,7 +4,7 @@ SQLAlchemy models representing PSQL tables
 
 from server.database import Base
 
-from sqlalchemy import Column, Integer, String, ARRAY, ForeignKey
+from sqlalchemy import Column, Integer, String, ARRAY, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 
@@ -17,6 +17,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     address = Column(String, nullable=False)
     image = Column(String, nullable=False)
+    # is_admin = Column(Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name} {self.email}>"
