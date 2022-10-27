@@ -43,7 +43,6 @@ def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"No user with id:{user_id}")
     return user
 
-
 # @router.post('/new', response_model=UserResponseSchema, status_code=status.HTTP_201_CREATED)
 # def new_user(payload: UserNewSchema, db: Session = Depends(get_db)):
 #     # Validate for pre-existing user with same user_id

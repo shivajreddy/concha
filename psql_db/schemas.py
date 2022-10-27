@@ -3,6 +3,7 @@ Schemas/Pydantic models for the PSQL db
 """
 from pydantic.main import BaseModel, Extra, Field
 from pydantic import EmailStr
+from pydantic.types import conint, confloat, conlist
 
 
 # ----------  Schemas related to 'User' model   ----------
@@ -70,7 +71,31 @@ class UserResponseSchema(BaseModel):
     image: str
 
 
+# ----------  Schemas related to 'AudioDataFile' model   ----------
+
+class TickBase(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    # each tick should be between -10 and -100
+    tick: int = Field(..., ge=-100, le=-10)
+
+
+class AudioDataFileSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    session_id: conint(strict=True)
+    # validation:1 -> “Ticks” must be 15 values and range from -10.0 to -100.0
+    ticks: conlist(confloat(strict=True, ge=-100.0, le=-10.0), min_items=15, max_items=15)
+    selected_tick: int
+    step_count: int
+
+    user_id: str
+
+
 # ---------- Authorization schema ----------
+
 class TokenPayloadSchema(BaseModel):
     user_id: str | None
     user_email: str | None
@@ -89,13 +114,3 @@ class UserNewResponseSchema(BaseModel):
 
     created_user_details: UserResponseSchema
     token: str
-
-
-# ----------  Schemas related to 'AudioDataFile' model   ----------
-
-class TickBase(BaseModel):
-    class Config:
-        extra = Extra.forbid
-
-    # each tick should be between -10 and -100
-    tick: int = Field(..., ge=-100, le=-10)

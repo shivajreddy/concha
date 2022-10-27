@@ -55,3 +55,4 @@ def signup(payload: UserNewSchema, db: Session = Depends(get_db)):
     token_details = create_access_token(
         data={"user_id": created_user.id, "user_email": created_user.email, "is_admin": False})
     return {"created_user_details": created_user, "token": token_details}
+

@@ -3,7 +3,9 @@ SQLAlchemy models representing PSQL tables
 """
 
 from server.database import Base
-from sqlalchemy import Column, Integer, String, ARRAY
+
+from sqlalchemy import Column, Integer, String, ARRAY, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -28,8 +30,8 @@ class AudioDataFile(Base):
     step_count = Column(Integer, nullable=False)
 
     # Relation to 'user' table
-    # user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
-    # user = relationship("User")
+    user_id = Column(Integer, ForeignKey("user_data.id", ondelete="CASCADE"), nullable=False)
+    user = relationship("User")
 
     def __repr__(self):
         return f"<AudioDataFile #{self.session_id} >"

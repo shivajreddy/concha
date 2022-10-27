@@ -3,7 +3,7 @@ This module contains all the CRUD utils
 """
 from sqlalchemy.orm import Session
 from psql_db.models import User, AudioDataFile
-from psql_db.schemas import UserNewSchema, UserRegisterInDB
+from psql_db.schemas import UserRegisterInDB, AudioDataFileSchema
 
 from pydantic import EmailStr
 
@@ -44,6 +44,18 @@ def create_new_user(db: Session, user_data: UserRegisterInDB):
 # ---------- AudioData model's services ----------
 
 # ---------- SELECT operations
-def get_audio_files(db: Session):
-    audio_files = db.query(AudioDataFile).all()
-    return audio_files
+def get_all_audio_data(db: Session):
+    all_audio_data = db.query(AudioDataFile).all()
+    return all_audio_data
+
+
+def get_audio_data_by_session_id(db: Session, session_id: int):
+    return db.query(AudioDataFile).filter(AudioDataFile.session_id == session_id).first()
+
+
+def add_audio_data(db: Session, audio_data: AudioDataFileSchema):
+    new_audio_data = AudioDataFile(**audio_data.dict())
+    db.add(new_audio_data)
+    db.commit()
+    db.refresh(new_audio_data)
+    return new_audio_data
