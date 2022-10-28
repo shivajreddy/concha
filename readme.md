@@ -74,7 +74,7 @@ Postman Collection : [Postman](https://www.postman.com/blue-comet-93782/workspac
 <a name="runlocally"/>
 ## Run the project locally
 
-#### Step 0: Prerequisites
+### Step 0: Prerequisites
 [Choice of IDE](https://www.jetbrains.com/products/#type=ide), [Docker](https://www.docker.com/), [Python3.10](https://www.python.org/downloads/)
 
 #### Step 1: Pull project
@@ -83,7 +83,7 @@ create a new empty project, and inside the root of the empty project: **pull** t
 git pull https://github.com/shivajreddy/concha.git
 ```
 
-#### Step 2: Setup containers & Run
+### Step 2: Setup containers & Run
 Create the docker containers using the `docker-compose-dev.yml` file and run the project with the following command in your terminal:
 ```
 docker-compose -f docker-compose-dev.yml up
@@ -95,7 +95,7 @@ This command(utilizing the docker-compose-dev.yml) does all the heavy lifting of
 	c: Create a postgress container dependancy, which will be initialized using the environment variables provided in `env` file
 	d: a
 
-#### Step 3: Initiate the Database using alembic
+### Step 3: Initiate the Database using alembic
 The project comes with the first alembic revision already set up, this revision basically creates all the tables with approriate conditions and relations. For any further changes in the Database schema in the future, you can easily modify(or add new) models in the `psql_db/models.py` and create a new revision using `alembic revision -m "<message related to the revision>"`, and then upgrade the database 
 
 SSH to container's(`dev-server-1` which is running the application) terminal.
@@ -108,14 +108,14 @@ Run the command
 
 Since there is already a revision that comes with the project, this command brings the database to this revision which in your case is intiating the DB with all the tables with correct schema.
 
-#### Step 4: Running Tests
+### Step 4: Running Tests
 
 
 
 <a name="rungcp"/>
 ## Running project on GCP
 
-#### Step 0: Prerequisites
+### Step 0: Prerequisites
 Google Cloud Platform: [GCP](https://cloud.google.com/)  
 
 

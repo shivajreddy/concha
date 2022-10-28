@@ -1,5 +1,5 @@
 """
-`audio-data` router handling all routes to /audio-data
+Router for endpoint: /audio-data
 """
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
@@ -41,7 +41,6 @@ def validation_checks(new_audio: AudioDataFileSchema, all_audio_data: list, curr
         if audio.step_count == new_audio.step_count:
             raise HTTPException(status_code=422,
                                 detail=f"Step count:{new_audio.step_count} already exists")
-    # raise HTTPException(status_code=422, detail=f"{audio_data.session_id} already exits")
 
 
 # def user_root(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):

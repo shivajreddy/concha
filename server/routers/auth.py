@@ -12,7 +12,7 @@ from psql_db.schemas import UserRegisterInDB, UserNewSchema, UserNewResponseSche
 import uuid
 
 from server.database import get_db
-from server.oauth2 import create_access_token, verify_access_token, get_current_user
+from server.oauth2 import create_access_token
 from server.utils import verify_password, hash_password
 
 router = APIRouter(tags=['Authentication'], prefix='/auth')
