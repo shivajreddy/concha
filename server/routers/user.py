@@ -6,8 +6,9 @@ from fastapi import APIRouter, Depends, status, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from server.database import get_db
-from psql_db.schemas import UserAllSchema, UserSchema, SearchQueryBase
+from server.oauth2 import get_current_user, get_token_data
 
+from psql_db.schemas import UserAllSchema, UserSchema, SearchQueryBase, TokenPayloadSchema
 from psql_db.crud import get_users, get_user, get_users_by_email, get_users_by_name
 
 router = APIRouter(
@@ -41,6 +42,16 @@ def find_user_by_email(given_query: SearchQueryBase, request: Request, db: Sessi
         return {"search_result": users_by_name}
 
 
+# update user
+@router.patch('/update')
+def update_user(db: Session = Depends(get_db),
+                token_data: TokenPayloadSchema = Depends(get_token_data)):
+    print(token_data)
+
+
+# delete user
+
+
 # read user
 @router.get('/{user_id}', response_model=UserSchema, status_code=status.HTTP_200_OK)
 def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
@@ -48,12 +59,6 @@ def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=422, detail=f"No user with id:{user_id}")
     return user
-
-# update user
-
-
-# delete user
-
 
 #
 

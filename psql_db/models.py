@@ -17,7 +17,6 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     address = Column(String, nullable=False)
     image = Column(String, nullable=False)
-    # is_admin = Column(Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f"<User #{self.id}: {self.name} {self.email}>"
@@ -25,7 +24,7 @@ class User(Base):
 
 class AudioDataFile(Base):
     __tablename__ = "audio_data"
-    # session_id = Column(Integer, primary_key=True, nullable=False)
+
     unique_id = Column(String, primary_key=True, nullable=False)
     session_id = Column(Integer, nullable=False)
     ticks = Column(ARRAY(Integer), nullable=False)

@@ -2,6 +2,7 @@
 This module contains all the CRUD utils
 """
 from sqlalchemy.orm import Session
+
 from psql_db.models import User, AudioDataFile
 from psql_db.schemas import UserRegisterInDB, AudioDataFileSchema
 
