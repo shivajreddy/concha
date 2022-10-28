@@ -57,4 +57,5 @@ def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
 #     return created_user
 
 
-@router.get('/')
+# Other end points
+# @router.get('/')
