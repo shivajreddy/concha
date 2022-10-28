@@ -92,7 +92,7 @@ class AudioDataFileSchema(BaseModel):
     selected_tick: int
     step_count: int
 
-    user_id: str
+    user_id: str | None = None
 
 
 # ---------- Authorization schema ----------

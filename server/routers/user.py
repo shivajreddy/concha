@@ -1,5 +1,5 @@
 """
-`user` router handling all routes to /user
+Router for endpoint: /user
 """
 import uuid
 

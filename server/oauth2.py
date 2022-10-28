@@ -1,11 +1,16 @@
+"""
+OAuth2 module
+"""
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from psql_db.crud import get_user
 from psql_db.schemas import TokenPayloadSchema
+
 from server.config import settings
 from server.database import get_db
 
@@ -37,10 +42,11 @@ def verify_access_token(token: str, credentials_exception):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
         user_id: str = payload.get("user_id")
+        user_email: str = payload.get("user_email")
 
         if not user_id:
             raise credentials_exception
-        token_data = TokenPayloadSchema(id=user_id)
+        token_data = TokenPayloadSchema(id=user_id, user_email=user_email)
     except JWTError:
         raise credentials_exception
 
