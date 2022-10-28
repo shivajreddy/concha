@@ -1,7 +1,7 @@
 # Concha API
 
 ##### Table of Contents  
-[01. Scope of Project](#Scope)  
+[01. Scope of Project](#scope-of-project)  
 [02. Project Structure](#projectstructure)  
 [03. Run Project Locally](#runlocally)  
 [04. Run on GCP](#rungcp)  
