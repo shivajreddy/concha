@@ -50,7 +50,7 @@ def get_all_audio_data(db: Session):
 
 
 def get_audio_data_by_session_id(db: Session, session_id: int):
-    return db.query(AudioDataFile).filter(AudioDataFile.session_id == session_id).first()
+    return db.query(AudioDataFile).filter(AudioDataFile.session_id == session_id).all()
 
 
 def add_audio_data(db: Session, audio_data: AudioDataFileSchema):
