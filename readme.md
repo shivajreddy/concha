@@ -7,7 +7,6 @@
 [04. Run on GCP](#rungcp)  
 
 
-<a name="Scope"/>
 ## Scope of project
 
 Assignment Document : [GoogleDoc](https://docs.google.com/document/d/1Ucla0d4T7ykzz40NQbfbNpDTVlFaOqGh4y7P9nX16Ls/edit)  
@@ -26,7 +25,6 @@ Postman Collection : [Postman](https://www.postman.com/blue-comet-93782/workspac
 | Application Devlopment        | Docker, Docker Compose |
 | Cloud                         | GCP                    |
 
-<a name="projectstructure"/>
 ## Project Structure
 
 ```
@@ -71,13 +69,12 @@ Postman Collection : [Postman](https://www.postman.com/blue-comet-93782/workspac
 	└── readme.md # documentation for the project
 ```
 
-<a name="runlocally"/>
 ## Run the project locally
 
 ### Step 0: Prerequisites
 [Choice of IDE](https://www.jetbrains.com/products/#type=ide), [Docker](https://www.docker.com/), [Python3.10](https://www.python.org/downloads/)
 
-#### Step 1: Pull project
+### Step 1: Pull project
 create a new empty project, and inside the root of the empty project: **pull** the repository by running the following command
 ```
 git pull https://github.com/shivajreddy/concha.git
@@ -112,7 +109,6 @@ Since there is already a revision that comes with the project, this command brin
 
 
 
-<a name="rungcp"/>
 ## Running project on GCP
 
 ### Step 0: Prerequisites
@@ -122,5 +118,5 @@ Google Cloud Platform: [GCP](https://cloud.google.com/)
 
 ## API Endpoints
 
-TODO, document all end points
-TODO, mention how to use /docs
+TODO, document all end points  
+TODO, mention how to use /docs  
