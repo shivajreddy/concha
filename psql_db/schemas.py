@@ -87,10 +87,9 @@ class AudioDataFileSchema(BaseModel):
         extra = Extra.forbid
 
     session_id: conint(strict=True)
-    # validation:1 -> “Ticks” must be 15 values and range from -10.0 to -100.0
     ticks: conlist(confloat(strict=True, ge=-100.0, le=-10.0), min_items=15, max_items=15)
-    selected_tick: int
-    step_count: int
+    selected_tick: conint(strict=True, ge=0, le=14)
+    step_count: conint(strict=True, ge=0, le=9)
 
     user_id: str | None = None
 

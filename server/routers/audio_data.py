@@ -8,7 +8,7 @@ from server.database import get_db
 
 from server.oauth2 import get_current_user
 
-from psql_db.crud import get_audio_data_by_session_id, get_all_audio_data, add_audio_data
+from psql_db.crud import audio_data_of_session_id, get_all_audio_data, add_audio_data
 from psql_db.schemas import AudioDataFileSchema, UserSchema
 
 # Router config
@@ -27,8 +27,21 @@ def get_all_audio_files(db: Session = Depends(get_db)):
 
 
 # utility function to validate session_ids
-def validation_checks(new_audio: AudioDataFileSchema, all_audio_data: list):
+def validation_checks(new_audio: AudioDataFileSchema, all_audio_data: list, current_user):
     print('validation')
+
+    # For the given all_audio_data, make sure existing user_id and given_user_id matches
+    if current_user.id != all_audio_data[0].user_id:
+        print("bro same session_id", all_audio_data)
+        raise HTTPException(status_code=422,
+                            detail=f"current user_id: {current_user.id} cant add session to another user with id: {all_audio_data[0].user_id}")
+
+    # Each session must have unique step_count with range 0 to 9
+    for audio in all_audio_data:
+        if audio.step_count == new_audio.step_count:
+            raise HTTPException(status_code=422,
+                                detail=f"Step count:{new_audio.step_count} already exists")
+    # raise HTTPException(status_code=422, detail=f"{audio_data.session_id} already exits")
 
 
 # def user_root(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
@@ -45,14 +58,11 @@ def new_audio_data(audio_data: AudioDataFileSchema, db: Session = Depends(get_db
     # check if session_id exists
     # “Session_id” must be unique to a user
     # same session_id cant have same step_count
-    existing_audios = get_audio_data_by_session_id(db=db, session_id=audio_data.session_id)
+    # ALl audio_data for a given session_id
+    audios_of_session_id = audio_data_of_session_id(db=db, session_id=audio_data.session_id)
 
-    if existing_audios:
-        for existing_audio in existing_audios:
-            if existing_audio.user_id != current_user.id:
-                print("bro same session_id", existing_audios)
-                raise HTTPException(status_code=422, detail=f"{current_user.email} cant add to another usedid")
-        raise HTTPException(status_code=422, detail=f"{audio_data.session_id} already exits")
+    if audios_of_session_id:
+        validation_checks(new_audio=audio_data, all_audio_data=audios_of_session_id, current_user=current_user)
 
     # Finished the validations
     # call the service that adds the data

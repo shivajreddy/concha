@@ -25,7 +25,9 @@ class User(Base):
 
 class AudioDataFile(Base):
     __tablename__ = "audio_data"
-    session_id = Column(Integer, primary_key=True, nullable=False)
+    # session_id = Column(Integer, primary_key=True, nullable=False)
+    unique_id = Column(String, primary_key=True, nullable=False)
+    session_id = Column(Integer, nullable=False)
     ticks = Column(ARRAY(Integer), nullable=False)
     selected_tick = Column(Integer, nullable=False)
     step_count = Column(Integer, nullable=False)

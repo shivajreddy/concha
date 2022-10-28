@@ -49,12 +49,13 @@ def get_all_audio_data(db: Session):
     return all_audio_data
 
 
-def get_audio_data_by_session_id(db: Session, session_id: int):
+def audio_data_of_session_id(db: Session, session_id: int):
     return db.query(AudioDataFile).filter(AudioDataFile.session_id == session_id).all()
 
 
 def add_audio_data(db: Session, audio_data: AudioDataFileSchema):
     new_audio_data = AudioDataFile(**audio_data.dict())
+    new_audio_data.unique_id = str(new_audio_data.session_id) + "-" + str(new_audio_data.step_count)
     db.add(new_audio_data)
     db.commit()
     db.refresh(new_audio_data)
