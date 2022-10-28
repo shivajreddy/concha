@@ -25,10 +25,16 @@ def get_user(db: Session, user_id: str = None, user_email: EmailStr = None):
     return user
 
 
-def get_by_email(db: Session, user_email: str):
-    user = db.query(User).filter(User.email.like(f'%{user_email}%')).all()
+# Look up all similar entries of given email string
+def get_users_by_email(db: Session, email_query: str):
+    users = db.query(User).filter(User.email.like(f'%{email_query}%')).all()
+    return users
 
-    return user
+
+# Look up all similar entries of given name string
+def get_users_by_name(db: Session, name_query: str):
+    users = db.query(User).filter(User.name.like(f'%{name_query}%')).all()
+    return users
 
 
 # ---------- INSERT operations

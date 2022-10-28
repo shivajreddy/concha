@@ -55,8 +55,12 @@ class UserRegisterInDB(BaseModel):
     image: str
 
 
-class EmailBase(BaseModel):
-    email: EmailStr
+class SearchQueryBase(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    name: str | None = None
+    email: EmailStr | None = None
 
 
 # Response schema for a group of users

@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends, status, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from server.database import get_db
-from psql_db.schemas import UserNewSchema, UserAllSchema, UserSchema, UserResponseSchema, EmailBase, UserRegisterInDB
+from psql_db.schemas import UserAllSchema, UserSchema, SearchQueryBase
 
-from psql_db.crud import get_users, create_new_user, get_user, get_by_email
+from psql_db.crud import get_users, get_user, get_users_by_email, get_users_by_name
 
 router = APIRouter(
     prefix="/user",
@@ -17,25 +17,45 @@ router = APIRouter(
 )
 
 
+# create user
 @router.get('/all', response_model=UserAllSchema, status_code=status.HTTP_200_OK)
 def user_root(db: Session = Depends(get_db)):
     all_users = get_users(db=db)
     return {"all_users": all_users}
 
 
-# fuzzy search by email
+# fuzzy search by email or name
 @router.get('/search', status_code=status.HTTP_200_OK)
-def find_user_by_email(given_query: EmailBase, request: Request, db: Session = Depends(get_db)):
-    users_by_email = get_by_email(db, given_query.email)
-    return {"result": users_by_email}
+def find_user_by_email(given_query: SearchQueryBase, request: Request, db: Session = Depends(get_db)):
+    # only email or name should be given
+    if not ((given_query.email is None) ^ (given_query.name is None)):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="Only email or name should be provided not both")
+
+    if given_query.email:
+        users_by_email = get_users_by_email(db, given_query.email)
+        return {"search_result": users_by_email}
+
+    if given_query.name:
+        users_by_name = get_users_by_name(db, given_query.name)
+        return {"search_result": users_by_name}
 
 
+# read user
 @router.get('/{user_id}', response_model=UserSchema, status_code=status.HTTP_200_OK)
 def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     if not user:
-        raise HTTPException(status_code=400, detail=f"No user with id:{user_id}")
+        raise HTTPException(status_code=422, detail=f"No user with id:{user_id}")
     return user
+
+# update user
+
+
+# delete user
+
+
+#
 
 # @router.post('/new', response_model=UserResponseSchema, status_code=status.HTTP_201_CREATED)
 # def new_user(payload: UserNewSchema, db: Session = Depends(get_db)):
