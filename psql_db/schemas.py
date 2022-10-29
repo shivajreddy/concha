@@ -98,7 +98,7 @@ class TickBase(BaseModel):
     tick: int = Field(..., ge=-100, le=-10)
 
 
-class AudioDataFileSchema(BaseModel):
+class AudioDataSchema(BaseModel):
     class Config:
         extra = Extra.forbid
 
@@ -107,6 +107,18 @@ class AudioDataFileSchema(BaseModel):
     selected_tick: conint(strict=True, ge=0, le=14)
     step_count: conint(strict=True, ge=0, le=9)
 
+
+class AudioDataDbSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    session_id: conint(strict=True)
+    ticks: conlist(confloat(strict=True, ge=-100.0, le=-10.0), min_items=15, max_items=15)
+    selected_tick: conint(strict=True, ge=0, le=14)
+    step_count: conint(strict=True, ge=0, le=9)
+
+    unique_id: str | None = None
     user_id: str | None = None
 
 

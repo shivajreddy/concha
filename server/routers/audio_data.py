@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 
 from server.database import get_db
 
-from server.oauth2 import get_current_user
+from server.oauth2 import get_current_user, get_token_data
 
-from psql_db.crud import audio_data_of_session_id, get_all_audio_data, add_audio_data
-from psql_db.schemas import AudioDataFileSchema, UserSchema
+from psql_db.crud import audio_data_of_session_id, get_all_audio_data, add_audio_data, get_user
+from psql_db.schemas import AudioDataSchema, UserSchema, TokenPayloadSchema, AudioDataDbSchema
 
 # Router config
 router = APIRouter(
@@ -27,44 +27,47 @@ def get_all_audio_files(db: Session = Depends(get_db)):
     # return {"all_data": all_data}
 
 
-# utility function to validate session_ids
-def validation_checks(new_audio: AudioDataFileSchema, all_audio_data: list, current_user):
-    print('validation')
-
-    # For the given all_audio_data, make sure existing user_id and given_user_id matches
-    if current_user.id != all_audio_data[0].user_id:
-        print("bro same session_id", all_audio_data)
-        raise HTTPException(status_code=422,
-                            detail=f"current user_id: {current_user.id} cant add session to another user with id: {all_audio_data[0].user_id}")
-
-    # Each session must have unique step_count with range 0 to 9
-    for audio in all_audio_data:
-        if audio.step_count == new_audio.step_count:
-            raise HTTPException(status_code=422,
-                                detail=f"Step count:{new_audio.step_count} already exists")
-
-
 # ----- create audio_data ------
 @router.post('/new')
-def new_audio_data(audio_data: AudioDataFileSchema, db: Session = Depends(get_db),
-                   current_user: UserSchema = Depends(get_current_user)):
-    # TODO if current_user is an admin, then take the given user_id instead of admins id
-    # given_user_id = current_user.id   # for normal users
-    # given_user_id = audio_data.user_id    # for admin
+def new_audio_data(audio_data: AudioDataSchema,
+                   user_id: str = None,
+                   db: Session = Depends(get_db),
+                   current_user: UserSchema = Depends(get_current_user),
+                   token_data: TokenPayloadSchema = Depends(get_token_data)):
+    # validate: if user adding their account, or has admin privileges, and user_id should be valid
+    if user_id:
+        if (user_id != current_user.id) and (not token_data.is_admin):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                detail=f"You can only add audio_data to your account, or have admin privileges")
+        if not get_user(db=db, user_id=user_id):
+            raise HTTPException(status_code=404, detail=f"No user with id: {user_id}")
 
-    # validations:2 ->
-    # check if session_id exists
-    # “Session_id” must be unique to a user
-    # same session_id cant have same step_count
-    # ALl audio_data for a given session_id
-    audios_of_session_id = audio_data_of_session_id(db=db, session_id=audio_data.session_id)
+    # id of the user to whom the audio data should be added
+    if user_id:
+        assign_to_user_with_id = user_id
+    else:
+        assign_to_user_with_id = current_user.id
 
-    if audios_of_session_id:
-        validation_checks(new_audio=audio_data, all_audio_data=audios_of_session_id, current_user=current_user)
+    # find all audio data of given session_id and validate for duplicate step_count
+    all_audios_of_session_id = audio_data_of_session_id(db=db, session_id=audio_data.session_id)
 
-    # Finished the validations
-    # call the service that adds the data
-    audio_data.user_id = current_user.id
-    created_audio_data = add_audio_data(db=db, audio_data=audio_data)
+    if all_audios_of_session_id:
+
+        # validate: given session_id can be assigned to pre-existing user only
+        if all_audios_of_session_id[0].user_id != assign_to_user_with_id:
+            raise HTTPException(status_code=422,
+                                detail=f"session_id:{audio_data.session_id} is taken by user with email: {all_audios_of_session_id[0].user.email}")
+
+        # validate: for the given session_id, only new step_count(0-9) are allowed
+        for audio in all_audios_of_session_id:
+            if audio.step_count == audio_data.step_count:
+                raise HTTPException(status_code=422,
+                                    detail=f"Step count:{audio.step_count} already exists for session_id:{audio_data.session_id}")
+
+    final_audio_data = AudioDataDbSchema.parse_obj(audio_data)
+    final_audio_data.user_id = assign_to_user_with_id
+    final_audio_data.unique_id = audio_data.session_id + "-" + audio_data.step_count
+
+    created_audio_data = add_audio_data(db=db, audio_data=final_audio_data)
 
     return {"created_audio_data": created_audio_data}
