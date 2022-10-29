@@ -22,7 +22,7 @@ class User(Base):
         return f"<User #{self.id}: {self.name} {self.email}>"
 
 
-class AudioDataFile(Base):
+class AudioData(Base):
     __tablename__ = "audio_data"
 
     unique_id = Column(String, primary_key=True, nullable=False)
@@ -36,4 +36,4 @@ class AudioDataFile(Base):
     user = relationship("User")
 
     def __repr__(self):
-        return f"<AudioDataFile #{self.session_id} >"
+        return f"<AudioData #{self.session_id} >"

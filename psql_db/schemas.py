@@ -88,6 +88,15 @@ class UserResponseSchema(BaseModel):
     image: str
 
 
+class UserNewResponseSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    created_user_details: UserResponseSchema
+    token: str
+
+
 # ----------  Schemas related to 'AudioDataFile' model   ----------
 
 class TickBase(BaseModel):
@@ -101,6 +110,7 @@ class TickBase(BaseModel):
 class AudioDataSchema(BaseModel):
     class Config:
         extra = Extra.forbid
+        orm_mode = True
 
     session_id: conint(strict=True)
     ticks: conlist(confloat(strict=True, ge=-100.0, le=-10.0), min_items=15, max_items=15)
@@ -122,6 +132,28 @@ class AudioDataDbSchema(BaseModel):
     user_id: str | None = None
 
 
+class AudioDataResponseSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    session_id: int
+    ticks: list
+    selected_tick: int
+    step_count: int
+
+
+class AudioDataUpdateSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    session_id: conint(strict=True)
+    ticks: conlist(confloat(strict=True, ge=-100.0, le=-10.0), min_items=15, max_items=15) | None = None
+    selected_tick: conint(strict=True, ge=0, le=14) | None = None
+    step_count: conint(strict=True, ge=0, le=9)
+
+
 # ---------- Authorization schema ----------
 
 class TokenPayloadSchema(BaseModel):
@@ -133,12 +165,3 @@ class TokenPayloadSchema(BaseModel):
 class Token(BaseModel):
     token: str
     token_type: str
-
-
-class UserNewResponseSchema(BaseModel):
-    class Config:
-        extra = Extra.forbid
-        orm_mode = True
-
-    created_user_details: UserResponseSchema
-    token: str

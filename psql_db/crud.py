@@ -3,7 +3,7 @@ This module contains all the CRUD utils
 """
 from sqlalchemy.orm import Session
 
-from psql_db.models import User, AudioDataFile
+from psql_db.models import User, AudioData
 from psql_db.schemas import UserDbSchema, AudioDataDbSchema
 
 from pydantic import EmailStr
@@ -78,21 +78,32 @@ def delete_user(db: Session, user_email: EmailStr):
 
 # ---------- SELECT operations
 def get_all_audio_data(db: Session):
-    all_audio_data = db.query(AudioDataFile).all()
+    all_audio_data = db.query(AudioData).all()
 
     return all_audio_data
 
 
 def audio_data_of_session_id(db: Session, session_id: int):
-    return db.query(AudioDataFile).filter(AudioDataFile.session_id == session_id).all()
+    return db.query(AudioData).filter(AudioData.session_id == session_id).all()
 
 
 # ---------- INSERT operations
 def add_audio_data(db: Session, audio_data: AudioDataDbSchema):
-    new_audio_data = AudioDataFile(**audio_data.dict())
+    new_audio_data = AudioData(**audio_data.dict())
 
     db.add(new_audio_data)
     db.commit()
     db.refresh(new_audio_data)
 
     return new_audio_data
+
+
+# ---------- UPDATE operations
+def update_audio_data(db: Session, audio_data: AudioDataDbSchema):
+    audio_data_query = db.query(AudioData).filter(AudioData.unique_id == audio_data.unique_id)
+    audio_data_query.update(audio_data.dict())
+    print("this is the audio_data_query", audio_data_query)
+    print("first is", audio_data_query.first())
+    db.commit()
+
+    return db.query(AudioData).filter(AudioData.unique_id == audio_data.unique_id).first()
