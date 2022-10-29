@@ -13,7 +13,7 @@ from server.utils import hash_password
 
 from psql_db.schemas import UserAllSchema, UserSchema, SearchQueryBase, TokenPayloadSchema, UserUpdateSchema, \
     UserDbSchema, UserResponseSchema
-from psql_db.crud import get_users, get_user, get_users_by_email, get_users_by_name, update_user
+from psql_db.crud import get_users, get_user, get_users_by_email, get_users_by_name, update_user, delete_user
 
 # Router config
 router = APIRouter(
@@ -111,6 +111,18 @@ def update_user_with_given_data(user_data: UserUpdateSchema, db: Session = Depen
 
 # ------ delete user -----
 @router.delete('/delete')
-def delete_user(db: Session = Depends(get_db),
-                token_data: TokenPayloadSchema = Depends(get_token_data)):
-    print(token_data)
+def delete_user_with_given_email(email: EmailStr, db: Session = Depends(get_db),
+                                 current_user: UserSchema = Depends(get_current_user),
+                                 token_data: TokenPayloadSchema = Depends(get_token_data)):
+    # only admin or current_user can delete the given user
+    user_with_email = get_user(db=db, user_email=email)
+    if not user_with_email:
+        raise HTTPException(status_code=404, detail=f"No user with email: {email}")
+
+    if (current_user.email != email) and (not token_data.is_admin):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"You can only delete your account, or have admin privileges")
+
+    deleted = delete_user(db=db, user_email=email)
+    if deleted:
+        return {"result": f"user with email {email} is deleted"}

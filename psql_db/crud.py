@@ -53,10 +53,17 @@ def create_new_user(db: Session, user_data: UserDbSchema):
 # ---------- UPDATE operations
 def update_user(db: Session, user_data: UserDbSchema):
     user_query = db.query(User).filter(User.id == user_data.id)
-    user = user_query.first()
     user_query.update(user_data.dict())
     db.commit()
     return db.query(User).filter(User.id == user_data.id).first()
+
+
+# ---------- DELETE operations
+def delete_user(db: Session, user_email: EmailStr):
+    user_query = db.query(User).filter((User.email == user_email))
+    user_query.delete()
+    db.commit()
+    return True
 
 
 # ---------- AudioData model's services ----------
