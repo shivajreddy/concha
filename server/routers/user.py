@@ -12,7 +12,7 @@ from server.oauth2 import get_current_user, get_token_data
 from server.utils import hash_password
 
 from psql_db.schemas import UserAllSchema, UserSchema, SearchQueryBase, TokenPayloadSchema, UserUpdateSchema, \
-    UserDbSchema
+    UserDbSchema, UserResponseSchema
 from psql_db.crud import get_users, get_user, get_users_by_email, get_users_by_name, update_user
 
 # Router config
@@ -67,7 +67,7 @@ def get_user_by_email(user_email: EmailStr, db: Session = Depends(get_db)):
 
 
 # ----- update user -----
-@router.patch('/update')
+@router.patch('/update', response_model=UserResponseSchema)
 def update_user_with_given_data(user_data: UserUpdateSchema, db: Session = Depends(get_db),
                                 current_user: UserSchema = Depends(get_current_user)):
     # create final user object using UserDbSchema

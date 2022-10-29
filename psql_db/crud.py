@@ -56,7 +56,7 @@ def update_user(db: Session, user_data: UserDbSchema):
     user = user_query.first()
     user_query.update(user_data.dict())
     db.commit()
-    return user
+    return db.query(User).filter(User.id == user_data.id).first()
 
 
 # ---------- AudioData model's services ----------
