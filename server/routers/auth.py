@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from psql_db.crud import create_new_user, get_user
 from psql_db.models import User
-from psql_db.schemas import UserRegisterInDB, UserNewSchema, UserNewResponseSchema, Token
+from psql_db.schemas import UserDbSchema, UserNewSchema, UserNewResponseSchema, Token
 
 import uuid
 
@@ -15,9 +15,15 @@ from server.database import get_db
 from server.oauth2 import create_access_token
 from server.utils import verify_password, hash_password
 
-router = APIRouter(tags=['Authentication'], prefix='/auth')
+# Router config
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"],
+    responses={404: {"description": "not found"}}
+)
 
 
+# ----- Login with email and password ------
 @router.post('/login', response_model=Token)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     # OAuth2PasswordRequestForm -> {"username" :"", "password":""}
@@ -45,6 +51,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
     return {"token": access_token, "token_type": "bearer"}
 
 
+# ----- Sign up for new user ------
 @router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=UserNewResponseSchema)
 def signup(payload: UserNewSchema, db: Session = Depends(get_db)):
     # Validate for pre-existing user with same user_email
@@ -52,7 +59,7 @@ def signup(payload: UserNewSchema, db: Session = Depends(get_db)):
     if existing_user_with_same_email:
         raise HTTPException(status_code=404, detail=f"User already exists with email: {payload.email}")
 
-    user_payload = UserRegisterInDB.parse_obj(payload)
+    user_payload = UserDbSchema.parse_obj(payload)
 
     # Create Unique id for every user
     user_payload.id = str(uuid.uuid1())

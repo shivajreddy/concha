@@ -43,7 +43,19 @@ class UserNewSchema(BaseModel):
     image: str
 
 
-class UserRegisterInDB(BaseModel):
+class UserUpdateSchema(BaseModel):
+    class Config:
+        extra = Extra.forbid
+        orm_mode = True
+
+    name: str | None = None
+    email: EmailStr | None = None
+    password: str | None = None
+    address: str | None = None
+    image: str | None = None
+
+
+class UserDbSchema(BaseModel):
     class Config:
         orm_mode = True
 

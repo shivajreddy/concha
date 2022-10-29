@@ -4,7 +4,7 @@ This module contains all the CRUD utils
 from sqlalchemy.orm import Session
 
 from psql_db.models import User, AudioDataFile
-from psql_db.schemas import UserRegisterInDB, AudioDataFileSchema
+from psql_db.schemas import UserDbSchema, AudioDataFileSchema
 
 from pydantic import EmailStr
 
@@ -12,11 +12,13 @@ from pydantic import EmailStr
 # ---------- USER model's services ----------
 
 # ---------- SELECT operations
+# Get all users in the users_data table
 def get_users(db: Session):
     users = db.query(User).all()
     return users
 
 
+# Get user with email or id
 def get_user(db: Session, user_id: str = None, user_email: EmailStr = None):
     user = None
     if user_id:
@@ -39,13 +41,22 @@ def get_users_by_name(db: Session, name_query: str):
 
 
 # ---------- INSERT operations
-def create_new_user(db: Session, user_data: UserRegisterInDB):
+def create_new_user(db: Session, user_data: UserDbSchema):
     new_user = User(**user_data.dict())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
     return new_user
+
+
+# ---------- UPDATE operations
+def update_user(db: Session, user_data: UserDbSchema):
+    user_query = db.query(User).filter(User.id == user_data.id)
+    user = user_query.first()
+    user_query.update(user_data.dict())
+    db.commit()
+    return user
 
 
 # ---------- AudioData model's services ----------

@@ -19,6 +19,7 @@ router = APIRouter(
 )
 
 
+# ----- get all audio_data------
 @router.get('/all', status_code=status.HTTP_200_OK)
 def get_all_audio_files(db: Session = Depends(get_db)):
     all_data = get_all_audio_data(db)
@@ -43,9 +44,7 @@ def validation_checks(new_audio: AudioDataFileSchema, all_audio_data: list, curr
                                 detail=f"Step count:{new_audio.step_count} already exists")
 
 
-# def user_root(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
-
-# @router.post('/new', dependencies=[Depends(get_current_user)])
+# ----- create audio_data ------
 @router.post('/new')
 def new_audio_data(audio_data: AudioDataFileSchema, db: Session = Depends(get_db),
                    current_user: UserSchema = Depends(get_current_user)):
