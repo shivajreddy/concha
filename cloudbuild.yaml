@@ -1,4 +1,4 @@
 steps:
 # running docker-compose
-- name: 'docker compose'
+- name: 'docker-compose'
   args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
