@@ -1,4 +1,4 @@
 steps:
 # running docker-compose
-- name: 'docker/compose:2.12'
-  args: ['up', '-d']
+- name: 'docker compose'
+  args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
