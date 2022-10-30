@@ -1,17 +1,13 @@
 version: "3.8"
 services:
   server:
-    image: shivajreddy/fastapitest:latest
+    image: shivajreddy/concha:latest
     depends_on:
       - postgres
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_HOSTNAME=${DATABASE_HOSTNAME}
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_USERNAME=${DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    env_file:
+      - ./.env
 
   postgres:
     image: postgres
