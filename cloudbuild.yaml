@@ -1,0 +1,4 @@
+steps:
+# running docker-compose
+- name: 'docker/compose:3.8'
+  args: ['up', '-d']
