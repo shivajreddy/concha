@@ -1,5 +1,0 @@
-steps:
-# running docker-compose
-  #cloudbuild.yaml
-- name: 'docker/compose:1.19.0'
-  args: ['-f', 'docker-compose-prod.yml', 'up', '-d']
