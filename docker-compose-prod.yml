@@ -5,7 +5,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "80:${SERVER_PORT}"
     env_file:
       - ./.env
     command: bash -c "uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload"
