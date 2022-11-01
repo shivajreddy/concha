@@ -1,7 +1,5 @@
 from fastapi.testclient import TestClient
 
-# from server import app
-
 from server import app
 
 from server.config import settings
@@ -17,3 +15,7 @@ def test_sample():
     with TestClient(app) as client:
         res = client.get(url=base_url)
 
+
+# Get all users
+def test_get_all_users():
+    a
