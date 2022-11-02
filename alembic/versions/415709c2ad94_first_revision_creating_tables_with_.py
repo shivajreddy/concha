@@ -1,8 +1,8 @@
-"""first revision: create db with all the models as schema
+"""first revision: creating tables with model schema
 
-Revision ID: 476896b70a85
+Revision ID: 415709c2ad94
 Revises: 
-Create Date: 2022-10-28 14:36:54.556814
+Create Date: 2022-11-02 22:28:12.421056
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '476896b70a85'
+revision = '415709c2ad94'
 down_revision = None
 branch_labels = None
 depends_on = None

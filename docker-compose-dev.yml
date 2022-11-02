@@ -16,10 +16,10 @@ services:
       - ./:/usr/src/app
     env_file:
       - ./.env
-    command: bash -c "alembic upgrade head && uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload"
+    command: "uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload"
+    #    command: bash -c "alembic upgrade head && uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload"
     depends_on:
       - postgres
-
 
 volumes:
   postgres-db:
