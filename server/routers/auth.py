@@ -18,7 +18,7 @@ from server.utils import verify_password, hash_password
 # Router config
 router = APIRouter(
     prefix="/auth",
-    tags=["Authentication"],
+    tags=["Authentication API"],
     responses={404: {"description": "not found"}}
 )
 
