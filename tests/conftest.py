@@ -33,7 +33,7 @@ sample_login_credentials_1 = {
 
 
 @pytest.fixture
-def test_user(client):
+def test_fixture_user(client):
     url = base_url + '/auth/signup'
     data = sample_new_user
 
@@ -46,7 +46,7 @@ def test_user(client):
 
 
 @pytest.fixture
-def test_user_admin(client):
+def test_fixture_user_admin(client):
     url = base_url + '/auth/signup'
     data = sample_new_admin
 
@@ -60,15 +60,28 @@ def test_user_admin(client):
 
 
 @pytest.fixture
-def user_token_details(client, test_user, test_user_admin):
+def test_fixture_user_token(test_fixture_user, client):
+    url = base_url + '/auth/login'
+    data = {
+        "username": test_fixture_user["email"],
+        "password": test_fixture_user["password"]
+    }
+
+    res = client.post(url=url, data=data)
+
+    return res
+
+
+@pytest.fixture
+def user_token_details(client, test_fixture_user, test_fixture_user_admin):
     url = base_url + '/auth/login'
     user_data = {
-        "username": test_user["email"],
-        "password": test_user["password"]
+        "username": test_fixture_user["email"],
+        "password": test_fixture_user["password"]
     }
     admin_data = {
-        "username": test_user_admin["email"],
-        "password": test_user_admin["password"]
+        "username": test_fixture_user_admin["email"],
+        "password": test_fixture_user_admin["password"]
     }
     user_res = client.post(url=url, data=user_data)
     admin_res = client.post(url=url, data=admin_data)
