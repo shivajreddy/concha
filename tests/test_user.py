@@ -85,3 +85,43 @@ def test_user_search(client, test_user):
     }
     res = client.get(url=url, json=wrong_email_format_body)
     assert res.status_code == 422
+
+
+def test_user_get_by_id(client, test_user):
+    url = base_url + '/user/id'
+
+    # test -> correct id given
+    params = {"user_id": test_user["id"]}
+    res = client.get(url=url, params=params)
+    assert res.status_code == 200
+    schemas.UserResponseSchema(**res.json())
+
+    # test -> give email instead of id
+    wrong_params = {"user_email": test_user["email"]}
+    res = client.get(url=url, params=wrong_params)
+    assert res.status_code == 422
+
+
+def test_user_email(client, test_user):
+    url = base_url + '/user/email'
+
+    # test -> correct email given
+    params = {"user_email": test_user["email"]}
+    res = client.get(url=url, params=params)
+    assert res.status_code == 200
+    schemas.UserResponseSchema(**res.json())
+
+    # test -> give id instead of email
+    wrong_params = {"user_id": test_user["id"]}
+    res = client.get(url=url, params=wrong_params)
+    assert res.status_code == 422
+
+
+def test_user_update(client, test_user):
+    url = base_url + '/user/update'
+
+    # print('res = ', res, res.json())
+    # print("test_user =", test_user)
+
+    # test -> correct update details
+
