@@ -42,7 +42,6 @@ def test_user(client):
     created_user["password"] = data["password"]
 
     assert res.status_code == 201
-    # print('return this. test_user=', created_user)
     return created_user
 
 
@@ -57,7 +56,6 @@ def test_user_admin(client):
     created_user["password"] = data["password"]
 
     assert res.status_code == 201
-    # print('return this. test_user=', created_user)
     return created_user
 
 

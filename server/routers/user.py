@@ -11,7 +11,7 @@ from server.database import get_db
 from server.oauth2 import get_current_user, get_token_data
 from server.utils import hash_password
 
-from psql_db.schemas import UserAllSchema, UserSchema, SearchQueryBase, TokenPayloadSchema, UserUpdateSchema, \
+from psql_db.schemas import UserAllSchema, UserSchema, SearchUserQueryBase, TokenPayloadSchema, UserUpdateSchema, \
     UserDbSchema, UserResponseSchema
 from psql_db.crud import get_users, get_user, get_users_by_email, get_users_by_name, update_user, delete_user
 
@@ -32,7 +32,7 @@ def user_root(db: Session = Depends(get_db)):
 
 # ----- fuzzy search by email or name ------
 @router.get('/search', status_code=status.HTTP_200_OK)
-def find_user_by_email(given_query: SearchQueryBase, request: Request, db: Session = Depends(get_db)):
+def find_user_by_email(given_query: SearchUserQueryBase, request: Request, db: Session = Depends(get_db)):
     # only email or name should be given
     if not ((given_query.email is None) ^ (given_query.name is None)):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,

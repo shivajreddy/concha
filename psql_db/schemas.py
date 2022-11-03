@@ -27,7 +27,7 @@ class UserAllSchema(BaseModel):
         extra = Extra.forbid
         orm_mode = True
 
-    all_users: list[UserSchema]
+    all_users: conlist(item_type=UserSchema)
 
 
 class UserNewSchema(BaseModel):
@@ -67,7 +67,7 @@ class UserDbSchema(BaseModel):
     image: str
 
 
-class SearchQueryBase(BaseModel):
+class SearchUserQueryBase(BaseModel):
     class Config:
         extra = Extra.forbid
 
