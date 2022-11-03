@@ -11,20 +11,15 @@ from tests.database import client, session
 base_url = settings.base_url_test
 
 
-# Get all users
 def test_user_get_all(client):
     url = base_url + '/user/all'
     res = client.get(url=url)
 
+    # test -> get all users
     assert res.status_code == 200
     schemas.UserAllSchema(**res.json())  # response schema validation
     assert isinstance(res.json()["all_users"], list)  # only list, not other collections
 
-
-# TODO
-# user details test
-# user detail pure types test
-# all routes tests for status codes, both pass and fail status codes
 
 def test_user_search(client, test_fixture_user_1):
     url = base_url + '/user/search'
