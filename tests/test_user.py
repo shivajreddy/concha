@@ -26,12 +26,12 @@ def test_user_get_all(client):
 # user detail pure types test
 # all routes tests for status codes, both pass and fail status codes
 
-def test_user_search(client, test_fixture_user):
+def test_user_search(client, test_fixture_user_1):
     url = base_url + '/user/search'
 
     # test -> /user root
     correct_body = {
-        "email": test_fixture_user["email"]
+        "email": test_fixture_user_1["email"]
     }
     res = client.get(url=url, json=correct_body)
     assert res.status_code == 200
@@ -88,37 +88,37 @@ def test_user_search(client, test_fixture_user):
     assert res.status_code == 422
 
 
-def test_user_get_by_id(client, test_fixture_user):
+def test_user_get_by_id(client, test_fixture_user_1):
     url = base_url + '/user/id'
 
     # test -> correct id given
-    params = {"user_id": test_fixture_user["id"]}
+    params = {"user_id": test_fixture_user_1["id"]}
     res = client.get(url=url, params=params)
     assert res.status_code == 200
     schemas.UserResponseSchema(**res.json())
 
     # test -> give email instead of id
-    wrong_params = {"user_email": test_fixture_user["email"]}
+    wrong_params = {"user_email": test_fixture_user_1["email"]}
     res = client.get(url=url, params=wrong_params)
     assert res.status_code == 422
 
 
-def test_user_email(client, test_fixture_user):
+def test_user_email(client, test_fixture_user_1):
     url = base_url + '/user/email'
 
     # test -> correct email given
-    params = {"user_email": test_fixture_user["email"]}
+    params = {"user_email": test_fixture_user_1["email"]}
     res = client.get(url=url, params=params)
     assert res.status_code == 200
     schemas.UserResponseSchema(**res.json())
 
     # test -> give id instead of email
-    wrong_params = {"user_id": test_fixture_user["id"]}
+    wrong_params = {"user_id": test_fixture_user_1["id"]}
     res = client.get(url=url, params=wrong_params)
     assert res.status_code == 422
 
 
-def test_user_update(client, test_fixture_user):
+def test_user_update(client, test_fixture_user_1):
     url = base_url + '/user/update'
 
     # print('res = ', res, res.json())
@@ -129,27 +129,51 @@ def test_user_update(client, test_fixture_user):
     pass
 
 
-def test_user_delete(test_fixture_user, test_fixture_user_token, client, session):
+def test_user_delete(test_fixture_user_1, test_fixture_user_2, test_fixture_user_token, client, session):
     url = base_url + '/user/delete'
     token = test_fixture_user_token.json()['token']
 
     # test -> delete an existing user
-    params = {"email": test_fixture_user["email"]}
-    headers = {"Authorization": f"Bearer {token}"}
-    res = client.delete(url=url, params=params, headers=headers)
+    params_user_1 = {"email": test_fixture_user_1["email"]}
+    headers_user_1 = {"Authorization": f"Bearer {token}"}
+    res = client.delete(url=url, params=params_user_1, headers=headers_user_1)
     assert res.status_code == 200
-    assert res.json() == {'result': f'user with email {test_fixture_user["email"]} is deleted'}
+    assert res.json() == {'result': f'user with email {test_fixture_user_1["email"]} is deleted'}
 
     # test -> try to delete non-exiting user
     params_wrong = {"email": "wrong-mail@email.com"}
-    headers = {"Authorization": f"Bearer {token}"}
-    res = client.delete(url=url, params=params_wrong, headers=headers)
+    res = client.delete(url=url, params=params_wrong, headers=headers_user_1)
     assert res.status_code == 404
     assert res.json() == {'detail': f'No user with email: {params_wrong["email"]}'}
 
     # test -> try to delete twice
-    # TODO
-    params = {"email": test_fixture_user["email"]}
-    headers = {"Authorization": f"Bearer {token}"}
-    res = client.delete(url=url, params=params, headers=headers)
-    res = client.delete(url=url, params=params, headers=headers)
+    user_query = session.query(User).filter(User.email == test_fixture_user_1["email"])
+    user_query.delete()
+    session.commit()
+    res = client.delete(url=url, params=params_user_1, headers=headers_user_1)
+    assert res.status_code == 404
+    assert res.json() == {'detail': f'No user with email: {test_fixture_user_1["email"]}'}
+
+
+def test_user_delete_other_users(test_fixture_user_2, test_fixture_user_token, client, session):
+    url = base_url + '/user/delete'
+    token = test_fixture_user_token.json()['token']
+
+    # test -> try deleting another user's account
+    params_user_2 = {"email": test_fixture_user_2["email"]}
+    headers_user_1 = {"Authorization": f"Bearer {token}"}
+    res = client.delete(url=url, params=params_user_2, headers=headers_user_1)
+    assert res.status_code == 403
+    assert res.json() == {'detail': 'You can only delete your account, or have admin privileges'}
+
+
+def test_user_admin_delete_other_users(test_fixture_user_1, test_fixture_user_admin, test_fixture_admin_token, client):
+    url = base_url + '/user/delete'
+    token = test_fixture_admin_token.json()['token']  # admins token
+
+    # test -> admin deleting another existing user
+    params_user = {"email": test_fixture_user_1["email"]}
+    headers_admin = {"Authorization": f"Bearer {token}"}
+    res = client.delete(url=url, params=params_user, headers=headers_admin)
+    assert res.status_code == 200
+    assert res.json() == {'result': f'user with email {test_fixture_user_1["email"]} is deleted'}
