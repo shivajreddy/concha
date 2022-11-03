@@ -9,9 +9,8 @@ from server.database import get_db, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-base_url = settings.base_url_test
-
-DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.test_database_name}"
+# DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.test_database_name}"
+DATABASE_URL = "postgresql://postgres:2106@localhost/conchadb_test"
 
 engine = create_engine(DATABASE_URL)
 
@@ -20,12 +19,13 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 @pytest.fixture()
 def session():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.drop_all(bind=engine)         # DROP all tables
+    Base.metadata.create_all(bind=engine)       # CREATE all tables
     db = TestingSessionLocal()
     try:
         yield db
     finally:
+        Base.metadata.drop_all(bind=engine)     # DROP all tables
         db.close()
 
 
