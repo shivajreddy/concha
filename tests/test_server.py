@@ -15,6 +15,14 @@ def test_sample(client):
     assert res.status_code == 200
 
 
+def test_root(client):
+    url = base_url
+    res = client.get(url=url)
+
+    assert res.status_code == 200
+    assert res.json() == {"Name: ": "concha server", "version": "1.0.1", "created by": "Shiva Reddy"}
+
+
 def test_empty_route(client):
     url = base_url + '/no'
     res = client.get(url)

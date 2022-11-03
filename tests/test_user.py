@@ -16,3 +16,8 @@ def test_get_all_users(client):
     res = client.get(url=url)
 
     assert res.status_code == 200
+
+# TODO
+# user details test
+# user detail pure types test
+# all routes tests for status codes, both pass and fail status codes
