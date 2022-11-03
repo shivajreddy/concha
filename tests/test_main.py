@@ -21,12 +21,3 @@ def test_empty_route(client):
     res = client.get(url)
     assert res.status_code == 404
     assert res.json() == {"detail": "Not Found"}
-
-
-""" checking schemas
-result_user = schemas.UserOut(**res.json())
-UserOut is just a sample name
-"""
-
-
-
