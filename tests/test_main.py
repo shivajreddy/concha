@@ -10,7 +10,6 @@ base_url = settings.base_url_test
 # Sample test
 def test_sample(client):
     url = base_url
-    print("url = ", url)
     res = client.get(url=url)
 
     assert res.status_code == 200

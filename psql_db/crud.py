@@ -102,8 +102,6 @@ def add_audio_data(db: Session, audio_data: AudioDataDbSchema):
 def update_audio_data(db: Session, audio_data: AudioDataDbSchema):
     audio_data_query = db.query(AudioData).filter(AudioData.unique_id == audio_data.unique_id)
     audio_data_query.update(audio_data.dict())
-    print("this is the audio_data_query", audio_data_query)
-    print("first is", audio_data_query.first())
     db.commit()
 
     return db.query(AudioData).filter(AudioData.unique_id == audio_data.unique_id).first()

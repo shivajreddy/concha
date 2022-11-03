@@ -17,15 +17,15 @@ engine = create_engine(DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-@pytest.fixture()
+@pytest.fixture()  # scope="module" as arg, for setup, destroy per module
 def session():
-    Base.metadata.drop_all(bind=engine)         # DROP all tables
-    Base.metadata.create_all(bind=engine)       # CREATE all tables
+    Base.metadata.drop_all(bind=engine)  # DROP all tables
+    Base.metadata.create_all(bind=engine)  # CREATE all tables
     db = TestingSessionLocal()
     try:
         yield db
     finally:
-        Base.metadata.drop_all(bind=engine)     # DROP all tables
+        Base.metadata.drop_all(bind=engine)  # DROP all tables
         db.close()
 
 
