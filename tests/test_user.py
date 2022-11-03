@@ -167,7 +167,7 @@ def test_user_delete_other_users(test_fixture_user_2, test_fixture_user_token, c
     assert res.json() == {'detail': 'You can only delete your account, or have admin privileges'}
 
 
-def test_user_admin_delete_other_users(test_fixture_user_1, test_fixture_user_admin, test_fixture_admin_token, client):
+def test_user_admin_delete_other_users(test_fixture_user_1, test_fixture_admin_token, client):
     url = base_url + '/user/delete'
     token = test_fixture_admin_token.json()['token']  # admins token
 
