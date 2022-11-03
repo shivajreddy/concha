@@ -1,5 +1,7 @@
 from server.config import settings
 
+from psql_db import schemas
+
 from tests.database import client, session
 
 base_url = settings.base_url_test
@@ -27,25 +29,4 @@ UserOut is just a sample name
 """
 
 
-# Get all users
-def test_get_all_users(client):
-    url = base_url + '/user/all'
-    print("url =", url)
-    res = client.get(url=url)
 
-    print("this is the res", res)
-    # assert res.status_code == 200
-
-
-def test_post_user(client):
-    url = base_url + '/auth/signup'
-    data = {
-        "name": "name1",
-        "email": "name1@example.com",
-        "password": "pass1",
-        "address": "address1",
-        "image": "image1"
-    }
-
-    res = client.post(url, json=data)
-    assert res.status_code == 201
