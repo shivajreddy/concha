@@ -1,5 +1,5 @@
 """
-This module contains all the CRUD utils
+This module contains all the CRUD utils also known as DOA layer
 """
 from sqlalchemy.orm import Session
 

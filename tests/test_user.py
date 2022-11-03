@@ -118,15 +118,51 @@ def test_user_email(client, test_fixture_user_1):
     assert res.status_code == 422
 
 
-def test_user_update(client, test_fixture_user_1):
+def test_user_update(test_fixture_user_1, test_fixture_user_2, test_fixture_user_token, client):
     url = base_url + '/user/update'
+    token = test_fixture_user_token.json()['token']
 
-    # print('res = ', res, res.json())
-    # print("test_user =", test_user)
+    headers_user_1 = {"Authorization": f"Bearer {token}"}
 
-    # test -> correct update details
-    # TODO
-    pass
+    # test -> try using pre-existing email
+    res = client.patch(url=url, headers=headers_user_1, json={"email": test_fixture_user_1["email"]})
+    assert res.status_code == 404
+    assert res.json() == {'detail': f'User already exists with email: {test_fixture_user_1["email"]}'}
+
+    # test -> update name
+    new_data_name = {"name": "user3"}
+    res = client.patch(url=url, headers=headers_user_1, json=new_data_name)
+    assert res.status_code == 200
+    schemas.UserResponseSchema(**res.json())
+    assert new_data_name["name"] == res.json()["name"]
+
+    # test -> update address
+    new_data_address = {"address": "updated-address1"}
+    res = client.patch(url=url, headers=headers_user_1, json=new_data_address)
+    assert res.status_code == 200
+    schemas.UserResponseSchema(**res.json())
+    assert new_data_address["address"] == res.json()["address"]
+
+    # test -> update image
+    new_data_image = {"image": "updated-image1"}
+    res = client.patch(url=url, headers=headers_user_1, json=new_data_image)
+    assert res.status_code == 200
+    schemas.UserResponseSchema(**res.json())
+    assert new_data_image["image"] == res.json()["image"]
+
+
+def test_user_update_email(test_fixture_user_1, test_fixture_user_token, client):
+    url = base_url + '/user/update'
+    token = test_fixture_user_token.json()['token']
+
+    headers_user_1 = {"Authorization": f"Bearer {token}"}
+
+    # test -> update email
+    new_data_email = {"email": "updated-test1@example.com"}
+    res = client.patch(url=url, headers=headers_user_1, json=new_data_email)
+    assert res.status_code == 200
+    schemas.UserResponseSchema(**res.json())
+    assert new_data_email["email"] == res.json()["email"]
 
 
 def test_user_delete(test_fixture_user_1, test_fixture_user_2, test_fixture_user_token, client, session):
