@@ -11,6 +11,13 @@ from tests.database import client, session
 base_url = settings.base_url_test
 
 
+def test_user_unknown_endpoint(client):
+    url = base_url + '/user' + '/non-existent'
+    res = client.get(url=url)
+
+    assert res.status_code == 404
+
+
 def test_user_get_all(client):
     url = base_url + '/user/all'
     res = client.get(url=url)
