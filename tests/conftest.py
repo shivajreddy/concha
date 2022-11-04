@@ -124,3 +124,34 @@ def user_token_details(client, test_fixture_user_1, test_fixture_user_admin):
     user_payload = jwt.decode(user_login_res.token, settings.secret_key, algorithms=[settings.algorithm])
     admin_payload = jwt.decode(admin_login_res.token, settings.secret_key, algorithms=[settings.algorithm])
     return {"user_payload": user_payload, "admin_payload": admin_payload}
+
+
+# Sample audio data for testing
+sample_new_audio_data_1 = {
+    "ticks": [-96.33, -96.33, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03, -53.6,
+              -49.17, -44.74, -40.31],
+    "selected_tick": 5,
+    "session_id": 3448,
+    "step_count": 1}
+
+sample_new_audio_data_2 = {
+    "ticks": [-69.33, -69.33, -39.47, -98.03999999999999, -48.61, -8.18, -57.75, -17.32, -66.89, -26.46, -58.03, -53.6,
+              -49.17, -44.74, -40.31],
+    "selected_tick": 6,
+    "session_id": 3449,
+    "step_count": 2}
+
+
+@pytest.fixture
+def test_fixture_audio_1(test_fixture_user_1, test_fixture_user_token, client):
+    url = base_url + '/audio-data/new'
+    data = sample_new_audio_data_1
+
+    token = test_fixture_user_token.json()['token']
+
+    params_user = {"email": test_fixture_user_1["email"]}
+    headers_user = {"Authorization": f"Bearer {token}"}
+
+    res = client.post(url=url, params=params_user, headers=headers_user, json=data)
+
+    return res

@@ -2,13 +2,15 @@
 Router for endpoint: /audio-data
 """
 from fastapi import APIRouter, Depends, status, HTTPException
+from pydantic.types import conlist
 
 from sqlalchemy.orm import Session
 
 from server.database import get_db
 from server.oauth2 import get_current_user, get_token_data
 
-from psql_db.crud import audio_data_of_session_id, get_all_audio_data, add_audio_data, get_user, update_audio_data
+from psql_db.crud import audio_data_of_session_id, get_all_audio_data, add_audio_data, get_user, update_audio_data, \
+    audio_data_of_user
 from psql_db.schemas import UserSchema, TokenPayloadSchema, AudioDataSchema, AudioDataDbSchema, AudioDataResponseSchema, \
     AudioDataUpdateSchema
 
@@ -21,11 +23,29 @@ router = APIRouter(
 
 
 # ----- get all audio_data------
-@router.get('/all', status_code=status.HTTP_200_OK, response_model=list[AudioDataResponseSchema])
+@router.get('/all', status_code=status.HTTP_200_OK, response_model=conlist(item_type=AudioDataResponseSchema))
 def get_all_audio_files(db: Session = Depends(get_db)):
     all_data = get_all_audio_data(db)
+    print("this is all the data", all_data)
     return all_data
     # return {"all_data": all_data}
+
+
+@router.get('/all-by-userid')
+def get_all_audio_data_of_user_id(user_id: str | None = None, db: Session = Depends(get_db),
+                                  current_user: UserSchema = Depends(get_current_user),
+                                  token_data: TokenPayloadSchema = Depends(get_token_data)):
+    search_for_id = current_user.id
+    # check for current user or has admin privileges
+    if user_id:
+        if not token_data.is_admin:
+            raise HTTPException(status_code=403, detail=f"You can only view your audio-data, or have admin privileges")
+        if not get_user(db=db, user_id=user_id):
+            raise HTTPException(status_code=404, detail=f"No user with id: {user_id}")
+        search_for_id = user_id
+
+    all_audios_of_user = audio_data_of_user(db=db, user_id=search_for_id)
+    return all_audios_of_user
 
 
 # ----- create audio_data ------
@@ -73,8 +93,8 @@ def add_new_audio_data(audio_data: AudioDataSchema,
     # call the crud operation to add
     created_audio_data = add_audio_data(db=db, audio_data=final_audio_data)
 
-    return created_audio_data
     # return {"created_audio_data": created_audio_data}
+    return created_audio_data
 
 
 # ----- search all audio_data for session_id ------

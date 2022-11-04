@@ -87,6 +87,12 @@ def audio_data_of_session_id(db: Session, session_id: int):
     return db.query(AudioData).filter(AudioData.session_id == session_id).all()
 
 
+def audio_data_of_user(db: Session, user_id: str):
+    user_audio_data_query = db.query(AudioData).filter(AudioData.user_id == user_id).all()
+
+    return user_audio_data_query
+
+
 # ---------- INSERT operations
 def add_audio_data(db: Session, audio_data: AudioDataDbSchema):
     new_audio_data = AudioData(**audio_data.dict())

@@ -63,7 +63,7 @@ def test_user_search(client, test_fixture_user_1):
     }
     res = client.get(url=url, json=partial_name_body)
     assert res.status_code == 200
-    schemas.UserDbSchema(**res.json()['search_result'][0])
+    schemas.UserDbSchema(**res.json()['search_result'][0])  # schema validation
     assert len(res.json()['search_result']) >= 1
 
     # test -> only same part of email given
@@ -72,7 +72,7 @@ def test_user_search(client, test_fixture_user_1):
     }
     res = client.get(url=url, json=partial_email_body)
     assert res.status_code == 200
-    schemas.UserDbSchema(**res.json()['search_result'][0])
+    schemas.UserDbSchema(**res.json()['search_result'][0])      # schema validation
     assert len(res.json()['search_result']) >= 1
 
     # test -> not an actual email, just a string
@@ -90,7 +90,7 @@ def test_user_get_by_id(client, test_fixture_user_1):
     params = {"user_id": test_fixture_user_1["id"]}
     res = client.get(url=url, params=params)
     assert res.status_code == 200
-    schemas.UserResponseSchema(**res.json())
+    schemas.UserResponseSchema(**res.json())        # schema validation
 
     # test -> give email instead of id
     wrong_params = {"user_email": test_fixture_user_1["email"]}
@@ -105,7 +105,7 @@ def test_user_email(client, test_fixture_user_1):
     params = {"user_email": test_fixture_user_1["email"]}
     res = client.get(url=url, params=params)
     assert res.status_code == 200
-    schemas.UserResponseSchema(**res.json())
+    schemas.UserResponseSchema(**res.json())        # schema validation
 
     # test -> give id instead of email
     wrong_params = {"user_id": test_fixture_user_1["id"]}
@@ -128,21 +128,21 @@ def test_user_update(test_fixture_user_1, test_fixture_user_2, test_fixture_user
     new_data_name = {"name": "user3"}
     res = client.patch(url=url, headers=headers_user_1, json=new_data_name)
     assert res.status_code == 200
-    schemas.UserResponseSchema(**res.json())
+    schemas.UserResponseSchema(**res.json())        # schema validation
     assert new_data_name["name"] == res.json()["name"]
 
     # test -> update address
     new_data_address = {"address": "updated-address1"}
     res = client.patch(url=url, headers=headers_user_1, json=new_data_address)
     assert res.status_code == 200
-    schemas.UserResponseSchema(**res.json())
+    schemas.UserResponseSchema(**res.json())        # schema validation
     assert new_data_address["address"] == res.json()["address"]
 
     # test -> update image
     new_data_image = {"image": "updated-image1"}
     res = client.patch(url=url, headers=headers_user_1, json=new_data_image)
     assert res.status_code == 200
-    schemas.UserResponseSchema(**res.json())
+    schemas.UserResponseSchema(**res.json())        # schema validation
     assert new_data_image["image"] == res.json()["image"]
 
 
@@ -156,7 +156,7 @@ def test_user_update_email(test_fixture_user_1, test_fixture_user_token, client)
     new_data_email = {"email": "updated-test1@example.com"}
     res = client.patch(url=url, headers=headers_user_1, json=new_data_email)
     assert res.status_code == 200
-    schemas.UserResponseSchema(**res.json())
+    schemas.UserResponseSchema(**res.json())        # schema validation
     assert new_data_email["email"] == res.json()["email"]
 
 

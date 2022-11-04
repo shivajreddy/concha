@@ -142,6 +142,8 @@ class AudioDataResponseSchema(BaseModel):
     selected_tick: int
     step_count: int
 
+    user_id: str
+
 
 class AudioDataUpdateSchema(BaseModel):
     class Config:

@@ -33,7 +33,7 @@ def test_auth_correct_login(test_fixture_user_token, client):
     res = test_fixture_user_token
 
     assert res.status_code == 200
-    schemas.Token(**res.json())
+    schemas.Token(**res.json())     # schema validation
 
 
 def test_auth_verify_user_token(test_fixture_user_1, user_token_details, client):
