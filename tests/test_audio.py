@@ -42,3 +42,9 @@ def test_audio_get_all_by_userid(test_fixture_audio_1, test_fixture_user_token, 
     schemas.AudioDataDbSchema(**res.json()[0])
     assert isinstance(res.json(), list)
     assert len(res.json()[0]["ticks"]) == 15
+
+# TODO
+# test_audio_invalid_field_type
+# test_audio_update
+# test_audio_search_by_session_id
+
