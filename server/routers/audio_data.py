@@ -26,7 +26,7 @@ router = APIRouter(
 @router.get('/all', status_code=status.HTTP_200_OK, response_model=conlist(item_type=AudioDataResponseSchema))
 def get_all_audio_files(db: Session = Depends(get_db)):
     all_data = get_all_audio_data(db)
-    print("this is all the data", all_data)
+
     return all_data
     # return {"all_data": all_data}
 

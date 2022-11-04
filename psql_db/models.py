@@ -4,7 +4,7 @@ SQLAlchemy models representing PSQL tables
 
 from server.database import Base
 
-from sqlalchemy import Column, Integer, String, ARRAY, ForeignKey
+from sqlalchemy import Column, Integer, String, ARRAY, ForeignKey, FLOAT
 from sqlalchemy.orm import relationship
 
 
@@ -27,7 +27,7 @@ class AudioData(Base):
 
     unique_id = Column(String, primary_key=True, nullable=False)
     session_id = Column(Integer, nullable=False)
-    ticks = Column(ARRAY(Integer), nullable=False)
+    ticks = Column(ARRAY(FLOAT), nullable=False)
     selected_tick = Column(Integer, nullable=False)
     step_count = Column(Integer, nullable=False)
 

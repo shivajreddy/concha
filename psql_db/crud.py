@@ -89,12 +89,14 @@ def audio_data_of_session_id(db: Session, session_id: int):
 
 def audio_data_of_user(db: Session, user_id: str):
     user_audio_data_query = db.query(AudioData).filter(AudioData.user_id == user_id).all()
+    print("result from crud function", user_audio_data_query)
 
     return user_audio_data_query
 
 
 # ---------- INSERT operations
 def add_audio_data(db: Session, audio_data: AudioDataDbSchema):
+    print("this is the received data that goes into crud", audio_data)
     new_audio_data = AudioData(**audio_data.dict())
 
     db.add(new_audio_data)

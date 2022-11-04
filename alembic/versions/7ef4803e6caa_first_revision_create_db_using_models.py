@@ -1,8 +1,8 @@
-"""first revision: creating tables with model schema
+"""first revision create db using models
 
-Revision ID: 415709c2ad94
+Revision ID: 7ef4803e6caa
 Revises: 
-Create Date: 2022-11-02 22:28:12.421056
+Create Date: 2022-11-04 05:06:06.950305
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '415709c2ad94'
+revision = '7ef4803e6caa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,7 @@ def upgrade() -> None:
     op.create_table('audio_data',
     sa.Column('unique_id', sa.String(), nullable=False),
     sa.Column('session_id', sa.Integer(), nullable=False),
-    sa.Column('ticks', sa.ARRAY(sa.Integer()), nullable=False),
+    sa.Column('ticks', sa.ARRAY(sa.FLOAT()), nullable=False),
     sa.Column('selected_tick', sa.Integer(), nullable=False),
     sa.Column('step_count', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.String(), nullable=False),
