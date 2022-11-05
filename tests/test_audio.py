@@ -51,11 +51,6 @@ def test_audio_get_all_by_userid(test_fixture_audio_1, test_fixture_user_1_token
     assert len(res.json()[0]["ticks"]) == 15
 
 
-# TODO
-# test_audio_invalid_field_type
-# test_audio_update
-# test_audio_search_by_session_id
-
 def test_audio_invalid_field_input(test_fixture_user_1_token, client):
     url = base_url + '/audio-data/new'
 
@@ -178,7 +173,29 @@ def test_audio_new_session_id(test_fixture_audio_1, test_fixture_user_1, test_fi
         "step_count": 2}
 
     res = client.post(url=url, headers=headers_user_1, json=data)
-    print("ress==", res, res.json())
     assert res.status_code == 422
     assert res.json() == {
         'detail': f'session_id:{data["session_id"]} is taken by user with email: {test_fixture_user_1["email"]}'}
+
+
+# TODO
+# test_audio_update
+# test_audio_search_by_session_id
+def test_audio_update(test_fixture_audio_1, test_fixture_user_1, test_fixture_user_1_token, client):
+    # print("test-audio-1=", test_fixture_audio_1)
+    # print("test-audio-1=", test_fixture_audio_1.json())
+    url = base_url + "/audio-data/update"
+    token = test_fixture_user_1_token.json()["token"]
+    headers_user_1 = {"Authorization": f"Bearer {token}"}
+
+    # test -> must pass session_id, step_count to update
+    no_data = {}
+    res = client.patch(url=url, headers=headers_user_1, json=no_data)
+    assert res.status_code == 422
+    res_error_val = res.json()['detail']
+    assert res_error_val[0]['loc'] == ['body', 'session_id']
+    assert res_error_val[1]['loc'] == ['body', 'step_count']
+    assert res_error_val[0]['msg'] and res_error_val[1]['msg'] == 'field required'
+    assert res_error_val[0]['type'] and res_error_val[1]['type'] == 'value_error.missing'
+
+    # test -> current users session
