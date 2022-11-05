@@ -137,7 +137,6 @@ class AudioDataUpdateSchema(BaseModel):
         extra = Extra.forbid
         # orm_mode = True
 
-    # TODO not every thing is necessary to update, create another UpdateDB schema that needs all fields
     session_id: conint(strict=True)
     ticks: conlist(confloat(strict=True, ge=-100.0, le=-10.0), min_items=15, max_items=15) | None = None
     selected_tick: conint(strict=True, ge=0, le=14) | None = None
