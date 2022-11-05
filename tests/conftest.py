@@ -81,11 +81,24 @@ def test_fixture_user_admin(client):
 
 
 @pytest.fixture
-def test_fixture_user_token(test_fixture_user_1, client):
+def test_fixture_user_1_token(test_fixture_user_1, client):
     url = base_url + '/auth/login'
     data = {
         "username": test_fixture_user_1["email"],
         "password": test_fixture_user_1["password"]
+    }
+
+    res = client.post(url=url, data=data)
+
+    return res
+
+
+@pytest.fixture
+def test_fixture_user_2_token(test_fixture_user_2, client):
+    url = base_url + '/auth/login'
+    data = {
+        "username": test_fixture_user_2["email"],
+        "password": test_fixture_user_2["password"]
     }
 
     res = client.post(url=url, data=data)
@@ -143,11 +156,11 @@ sample_new_audio_data_2 = {
 
 
 @pytest.fixture
-def test_fixture_audio_1(test_fixture_user_1, test_fixture_user_token, client):
+def test_fixture_audio_1(test_fixture_user_1, test_fixture_user_1_token, client):
     url = base_url + '/audio-data/new'
     data = sample_new_audio_data_1
 
-    token = test_fixture_user_token.json()['token']
+    token = test_fixture_user_1_token.json()['token']
 
     params_user = {"email": test_fixture_user_1["email"]}
     headers_user = {"Authorization": f"Bearer {token}"}

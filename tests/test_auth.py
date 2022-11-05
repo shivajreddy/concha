@@ -29,8 +29,8 @@ def test_auth_login_wrong_username(client, ):
     assert res.json() == {'detail': f'No user found with email:{data["username"]}'}
 
 
-def test_auth_correct_login(test_fixture_user_token, client):
-    res = test_fixture_user_token
+def test_auth_correct_login(test_fixture_user_1_token, client):
+    res = test_fixture_user_1_token
 
     assert res.status_code == 200
     schemas.Token(**res.json())     # schema validation
@@ -60,9 +60,9 @@ def test_auth_verify_admin_token(test_fixture_user_admin, user_token_details, cl
     assert is_admin is True
 
 
-def test_auth_wrong_token(test_fixture_user_1, test_fixture_user_token, client):
+def test_auth_wrong_token(test_fixture_user_1, test_fixture_user_1_token, client):
     url = base_url + '/user/delete'
-    token = test_fixture_user_token.json()['token'] + "oops"
+    token = test_fixture_user_1_token.json()['token'] + "oops"
 
     # test -> admin deleting another existing user
     params_user = {"email": test_fixture_user_1["email"]}

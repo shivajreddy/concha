@@ -120,9 +120,9 @@ def test_user_email(client, test_fixture_user_1):
     assert res.status_code == 422
 
 
-def test_user_update(test_fixture_user_1, test_fixture_user_2, test_fixture_user_token, client):
+def test_user_update(test_fixture_user_1, test_fixture_user_2, test_fixture_user_1_token, client):
     url = base_url + '/user/update'
-    token = test_fixture_user_token.json()['token']
+    token = test_fixture_user_1_token.json()['token']
 
     headers_user_1 = {"Authorization": f"Bearer {token}"}
 
@@ -153,9 +153,9 @@ def test_user_update(test_fixture_user_1, test_fixture_user_2, test_fixture_user
     assert new_data_image["image"] == res.json()["image"]
 
 
-def test_user_update_email(test_fixture_user_1, test_fixture_user_token, client):
+def test_user_update_email(test_fixture_user_1, test_fixture_user_1_token, client):
     url = base_url + '/user/update'
-    token = test_fixture_user_token.json()['token']
+    token = test_fixture_user_1_token.json()['token']
 
     headers_user_1 = {"Authorization": f"Bearer {token}"}
 
@@ -167,9 +167,9 @@ def test_user_update_email(test_fixture_user_1, test_fixture_user_token, client)
     assert new_data_email["email"] == res.json()["email"]
 
 
-def test_user_delete(test_fixture_user_1, test_fixture_user_2, test_fixture_user_token, client, session):
+def test_user_delete(test_fixture_user_1, test_fixture_user_2, test_fixture_user_1_token, client, session):
     url = base_url + '/user/delete'
-    token = test_fixture_user_token.json()['token']
+    token = test_fixture_user_1_token.json()['token']
 
     # test -> delete an existing user
     params_user_1 = {"email": test_fixture_user_1["email"]}
@@ -193,9 +193,9 @@ def test_user_delete(test_fixture_user_1, test_fixture_user_2, test_fixture_user
     assert res.json() == {'detail': f'No user with email: {test_fixture_user_1["email"]}'}
 
 
-def test_user_delete_other_users(test_fixture_user_2, test_fixture_user_token, client, session):
+def test_user_delete_other_users(test_fixture_user_2, test_fixture_user_1_token, client, session):
     url = base_url + '/user/delete'
-    token = test_fixture_user_token.json()['token']
+    token = test_fixture_user_1_token.json()['token']
 
     # test -> try deleting another user's account
     params_user_2 = {"email": test_fixture_user_2["email"]}
