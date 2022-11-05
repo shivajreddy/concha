@@ -85,7 +85,7 @@ def test_audio_invalid_field_input(test_fixture_user_1_token, client):
     assert res.json() == {
         'detail': [{'loc': ['body', 'ticks', 0], 'msg': 'value is not a valid float', 'type': 'type_error.float'}]}
 
-    # test -> each should be in range -100.0 t0 -10.0, changing the first value to -100.1
+    # test -> each tick in tick's should be in range -100.0 t0 -10.0, changing the first value to -100.1
     data_ticks_out_of_range_value = {
         "ticks": [-100.1, -96.33, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03,
                   -53.6, -49.17, -44.74, -40.31],
@@ -99,7 +99,7 @@ def test_audio_invalid_field_input(test_fixture_user_1_token, client):
     assert res_error_val['msg'] == "ensure this value is greater than or equal to -100.0"
     assert res_error_val['ctx'] == {'limit_value': -100.0}
 
-    # test -> each should be in range -100.0 t0 -10.0. changing the 2nd value to -9.9
+    # test -> each tick in tick's should be in range -100.0 t0 -10.0. changing the 2nd value to -9.9
     data_ticks_out_of_range_value = {
         "ticks": [-96.33, -9.9, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03,
                   -53.6, -49.17, -44.74, -40.31],
@@ -199,3 +199,5 @@ def test_audio_update(test_fixture_audio_1, test_fixture_user_1, test_fixture_us
     assert res_error_val[0]['type'] and res_error_val[1]['type'] == 'value_error.missing'
 
     # test -> current users session
+    def test_fail_on_attempt_to_edit_step_count_to_duplicate(self):
+        """Test to ensure exception when attempting to edit step_count to the same number as a preexisting step in session"""
