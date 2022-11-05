@@ -156,7 +156,7 @@ sample_new_audio_data_2 = {
 
 
 @pytest.fixture
-def test_fixture_audio_1(test_fixture_user_1, test_fixture_user_1_token, client):
+def test_fixture_audio_1(test_fixture_user_1, test_fixture_user_1_token, client, session):
     url = base_url + '/audio-data/new'
     data = sample_new_audio_data_1
 

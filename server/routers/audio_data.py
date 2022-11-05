@@ -11,7 +11,7 @@ from server.oauth2 import get_current_user, get_token_data
 
 from psql_db.crud import audio_data_of_session_id, get_all_audio_data, add_audio_data, get_user, update_audio_data, \
     audio_data_of_user
-from psql_db.schemas import UserSchema, TokenPayloadSchema, AudioDataSchema, AudioDataDbSchema, AudioDataResponseSchema, \
+from psql_db.schemas import UserSchema, TokenPayloadSchema, AudioDataSchema, AudioDataDbSchema, AudioDataSchema, \
     AudioDataUpdateSchema
 
 # Router config
@@ -23,15 +23,15 @@ router = APIRouter(
 
 
 # ----- get all audio_data------
-@router.get('/all', status_code=status.HTTP_200_OK, response_model=conlist(item_type=AudioDataResponseSchema))
+@router.get('/all', status_code=status.HTTP_200_OK, response_model=conlist(item_type=AudioDataSchema))
 def get_all_audio_files(db: Session = Depends(get_db)):
     all_data = get_all_audio_data(db)
 
     return all_data
-    # return {"all_data": all_data}
 
 
-@router.get('/all-by-userid')
+# @router.get('/all-by-userid', status_code=status.HTTP_200_OK)
+@router.get('/search/userid', status_code=status.HTTP_200_OK)
 def get_all_audio_data_of_user_id(user_id: str | None = None, db: Session = Depends(get_db),
                                   current_user: UserSchema = Depends(get_current_user),
                                   token_data: TokenPayloadSchema = Depends(get_token_data)):
@@ -48,8 +48,17 @@ def get_all_audio_data_of_user_id(user_id: str | None = None, db: Session = Depe
     return all_audios_of_user
 
 
+# search all audio_data for session_id
+@router.get('/search/sessionid', response_model=list[AudioDataSchema])
+def get_all_audio_data_with_given_session_id(session_id: int, db: Session = Depends(get_db)):
+    all_audios_of_session_id = audio_data_of_session_id(db=db, session_id=session_id)
+    if not all_audios_of_session_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No sessions with session_id: {session_id}")
+    return all_audios_of_session_id
+
+
 # ----- create audio_data ------
-@router.post('/new', response_model=AudioDataResponseSchema)
+@router.post('/new', status_code=status.HTTP_201_CREATED, response_model=AudioDataSchema)
 def add_new_audio_data(audio_data: AudioDataSchema,
                        user_id: str = None,
                        db: Session = Depends(get_db),
@@ -97,27 +106,19 @@ def add_new_audio_data(audio_data: AudioDataSchema,
     return created_audio_data
 
 
-# ----- search all audio_data for session_id ------
-@router.get('/search', response_model=list[AudioDataResponseSchema])
-def get_all_audio_data_with_given_session_id(session_id: int, db: Session = Depends(get_db)):
-    all_audios_of_session_id = audio_data_of_session_id(db=db, session_id=session_id)
-    if not all_audios_of_session_id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No sessions with session_id: {session_id}")
-    return all_audios_of_session_id
-
-
 # ----- update audio_data ------
 # session_id and step_count must be provided
 @router.patch('/update')
 def update_audio_data_with_given_data(audio_data: AudioDataUpdateSchema, db: Session = Depends(get_db),
                                       current_user: UserSchema = Depends(get_current_user)):
     # search all audio_data with given session_data
-    all_audios_of_session_id = audio_data_of_session_id(db=db, session_id=audio_data.session_id)
+    all_audios_of_session_id: conlist(item_type=AudioDataSchema) | list = audio_data_of_session_id(db=db,
+                                                                                                   session_id=audio_data.session_id)
     if not all_audios_of_session_id:
         raise HTTPException(status_code=404,
                             detail=f"There is not audio_data with given session_id: {audio_data.session_id}")
 
-    target_audio_data = None
+    target_audio_data: AudioDataSchema | None = None
 
     # search for the target audio_data with same step_count and session_id
     for audio in all_audios_of_session_id:
@@ -129,10 +130,20 @@ def update_audio_data_with_given_data(audio_data: AudioDataUpdateSchema, db: Ses
                             detail=f"session_id: {audio_data.session_id} with step_count: {audio_data.step_count} doesnt exist")
 
     # make the final audio_data object that goes in the database
-    final_audio_data = AudioDataDbSchema.parse_obj(audio_data)
+    final_audio_data = AudioDataDbSchema.from_orm(target_audio_data)
     unique_id = str(audio_data.session_id) + "-" + str(audio_data.step_count)
     final_audio_data.unique_id = unique_id
     final_audio_data.user_id = current_user.id
+
+    # update the given fields
+
+    # new selected_tick is given
+    if audio_data.selected_tick:
+        final_audio_data.step_count = audio_data.selected_tick
+
+    # new ticks are given
+    if audio_data.ticks:
+        final_audio_data.ticks = audio_data.ticks
 
     # call the crud operation to update
     updated_audio_data = update_audio_data(db=db, audio_data=final_audio_data)

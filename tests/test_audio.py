@@ -20,7 +20,7 @@ def test_audio_get_all(client):
     # test -> get all audio-data
     assert res.status_code == 200
     if res.json():
-        schemas.AudioDataResponseSchema(**res.json())  # response schema validation
+        schemas.AudioDataSchema(**res.json())  # response schema validation
     assert isinstance(res.json(), list)  # only list, not other collections
 
 
@@ -29,8 +29,8 @@ def test_audio_new(test_fixture_audio_1, client):
     res = test_fixture_audio_1
 
     # test -> insert new audio with proper fields
-    assert res.status_code == 200
-    schemas.AudioDataResponseSchema(**res.json())  # schema validation
+    assert res.status_code == 201
+    schemas.AudioDataSchema(**res.json())  # schema validation
 
     # test -> only post method is allowed
     res = client.get(url=url)
@@ -39,7 +39,7 @@ def test_audio_new(test_fixture_audio_1, client):
 
 
 def test_audio_get_all_by_userid(test_fixture_audio_1, test_fixture_user_1_token, client):
-    url = base_url + "/audio-data/all-by-userid"
+    url = base_url + "/audio-data/search/userid"
 
     token = test_fixture_user_1_token.json()['token']
     headers_user_1 = {"Authorization": f"Bearer {token}"}
@@ -49,6 +49,26 @@ def test_audio_get_all_by_userid(test_fixture_audio_1, test_fixture_user_1_token
     schemas.AudioDataDbSchema(**res.json()[0])
     assert isinstance(res.json(), list)
     assert len(res.json()[0]["ticks"]) == 15
+
+
+# TODO search all by session_id
+def test_audio_get_all_by_sessionid(client):
+    url = base_url + '/audio-data/search/sessionid'
+
+    params = {"session_id": 1}
+    res = client.get(url=url, params=params)
+    # print("res=", res, res.json())
+    pass
+
+    # test -> session_id must be provided
+
+    # test -> session_id must be an integer
+
+    # test -> session_id must exist
+
+    # test -> should return a list for correct session_id.
+
+    # test -> the return list must have the scheme of audio files
 
 
 def test_audio_invalid_field_input(test_fixture_user_1_token, client):
@@ -158,13 +178,33 @@ def test_audio_invalid_field_input(test_fixture_user_1_token, client):
     res_error_val['type'] = 'type_error.integer'
 
 
-def test_audio_new_session_id(test_fixture_audio_1, test_fixture_user_1, test_fixture_user_2, test_fixture_user_2_token,
+def test_audio_new_session_id(test_fixture_audio_1, test_fixture_user_1, test_fixture_user_2, test_fixture_user_1_token,
+                              test_fixture_user_2_token,
                               client):
-    # test -> adding a new audio data cant have session_id if it doesn't belong to prev. user
     url = base_url + '/audio-data/new'
-    token = test_fixture_user_2_token.json()["token"]
-    headers_user_1 = {"Authorization": f"Bearer {token}"}
+    sample_data = {
+        "ticks": [-96.33, -96.33, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03,
+                  -53.6, -49.17, -44.74, -40.31],
+        "selected_tick": 5,
+        "session_id": 3448,
+        "step_count": 1}
 
+    # test -> new session gets added with proper data
+    res = test_fixture_audio_1
+    assert res.status_code == 201
+    assert res.json() == sample_data
+
+    # test -> new audio_data cant have same both session_id and step_count, of already existing audio_data
+    token = test_fixture_user_1_token.json()["token"]
+    headers_user_1 = {"Authorization": f"Bearer {token}"}
+    res = client.post(url=url, headers=headers_user_1, json=sample_data)
+    assert res.status_code == 422
+    assert res.json() == {
+        'detail': f'Step count:{sample_data["step_count"]} already exists for session_id:{sample_data["session_id"]}'}
+
+    # test -> adding a new audio data cant have session_id if it doesn't belong to prev. user
+    token = test_fixture_user_2_token.json()["token"]
+    headers_user_2 = {"Authorization": f"Bearer {token}"}
     data = {
         "ticks": [-96.33, -96.33, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03,
                   -53.6, -49.17, -44.74, -40.31],
@@ -172,23 +212,18 @@ def test_audio_new_session_id(test_fixture_audio_1, test_fixture_user_1, test_fi
         "session_id": 3448,
         "step_count": 2}
 
-    res = client.post(url=url, headers=headers_user_1, json=data)
+    res = client.post(url=url, headers=headers_user_2, json=data)
     assert res.status_code == 422
     assert res.json() == {
         'detail': f'session_id:{data["session_id"]} is taken by user with email: {test_fixture_user_1["email"]}'}
 
 
-# TODO
-# test_audio_update
-# test_audio_search_by_session_id
 def test_audio_update(test_fixture_audio_1, test_fixture_user_1, test_fixture_user_1_token, client):
-    # print("test-audio-1=", test_fixture_audio_1)
-    # print("test-audio-1=", test_fixture_audio_1.json())
     url = base_url + "/audio-data/update"
     token = test_fixture_user_1_token.json()["token"]
     headers_user_1 = {"Authorization": f"Bearer {token}"}
 
-    # test -> must pass session_id, step_count to update
+    # test -> must provide session_id, step_count to update
     no_data = {}
     res = client.patch(url=url, headers=headers_user_1, json=no_data)
     assert res.status_code == 422
@@ -198,6 +233,39 @@ def test_audio_update(test_fixture_audio_1, test_fixture_user_1, test_fixture_us
     assert res_error_val[0]['msg'] and res_error_val[1]['msg'] == 'field required'
     assert res_error_val[0]['type'] and res_error_val[1]['type'] == 'value_error.missing'
 
-    # test -> current users session
-    def test_fail_on_attempt_to_edit_step_count_to_duplicate(self):
-        """Test to ensure exception when attempting to edit step_count to the same number as a preexisting step in session"""
+    # test -> throw error if only one of the two(session_id, step_count) are given
+    data = {"session_id": 3448}
+    res = client.patch(url=url, headers=headers_user_1, json=data)
+    assert res.status_code == 422
+    res_error_val = res.json()['detail']
+    assert res_error_val[0]['loc'] == ['body', 'step_count']
+    assert res_error_val[0]['msg'] == 'field required'
+    assert res_error_val[0]['type'] == 'value_error.missing'
+
+    # test -> session_id doesn't exist
+    data = {
+        "session_id": 999,
+        "step_count": 1}
+    res = client.patch(url=url, headers=headers_user_1, json=data)
+    assert res.status_code == 404
+    assert res.json() == {'detail': f'There is not audio_data with given session_id: {data["session_id"]}'}
+
+    # test -> step_count doesn't exist
+    data = {
+        "session_id": 3448,
+        "step_count": 9}
+    res = client.patch(url=url, headers=headers_user_1, json=data)
+    assert res.status_code == 404
+    assert res.json() == {
+        'detail': f'session_id: {data["session_id"]} with step_count: {data["step_count"]} doesnt exist'}
+
+    # TODO
+    # test -> can't update the step_count of a session, if step_count already exists for the session
+    # already existing -> session_id = 3448, step_count = 1.
+    # trying again with same -> session_id = 3448, step_count = 1.
+
+    # "ticks": [-96.33, -96.33, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03, -53.6,
+    #           -49.17, -44.74, -40.31],
+    # "selected_tick": 5,
+    # "session_id": 3448,
+    # "step_count": 1}
