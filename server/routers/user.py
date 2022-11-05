@@ -72,11 +72,11 @@ def update_user_with_given_data(user_data: UserUpdateSchema, db: Session = Depen
                                 current_user: UserSchema = Depends(get_current_user)):
     # create final user object using UserDbSchema
     current_user_in_db = get_user(db=db, user_email=current_user.email)
-    new_user_data = UserDbSchema(name=current_user_in_db.name, email=current_user_in_db.email,
-                                 address=current_user_in_db.address, image=current_user_in_db.image)
+
+    updated_user_data = UserDbSchema.from_orm(current_user_in_db)
 
     # id will be same uuid that was generated while creating the user
-    new_user_data.id = current_user.id
+    updated_user_data.id = current_user.id
 
     # if trying to update email, check if email not taken
     if user_data.email and get_user(db=db, user_email=user_data.email):
@@ -85,28 +85,28 @@ def update_user_with_given_data(user_data: UserUpdateSchema, db: Session = Depen
     # update if new password is given, then hash it and save it
     if user_data.password:
         hashed_password = hash_password(user_data.password)
-        new_user_data.hashed_password = hashed_password
+        updated_user_data.hashed_password = hashed_password
     else:
-        new_user_data.hashed_password = get_user(db=db, user_email=current_user.email).hashed_password
+        updated_user_data.hashed_password = get_user(db=db, user_email=current_user.email).hashed_password
 
     # update name
     if user_data.name:
-        new_user_data.name = user_data.name
+        updated_user_data.name = user_data.name
 
     # update email
     if user_data.email:
-        new_user_data.email = user_data.email
+        updated_user_data.email = user_data.email
 
     # update address
     if user_data.address:
-        new_user_data.address = user_data.address
+        updated_user_data.address = user_data.address
 
     # update image
     if user_data.image:
-        new_user_data.image = user_data.image
+        updated_user_data.image = user_data.image
 
-    final_updated_user = update_user(db=db, user_data=new_user_data)
-    return final_updated_user
+    updated_user = update_user(db=db, user_data=updated_user_data)
+    return updated_user
 
 
 # ------ delete user -----

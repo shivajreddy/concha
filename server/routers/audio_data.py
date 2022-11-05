@@ -2,7 +2,7 @@
 Router for endpoint: /audio-data
 """
 from fastapi import APIRouter, Depends, status, HTTPException
-from pydantic.types import conlist
+from pydantic.types import conlist, conint
 
 from sqlalchemy.orm import Session
 
