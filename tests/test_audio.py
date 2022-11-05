@@ -258,14 +258,3 @@ def test_audio_update(test_fixture_audio_1, test_fixture_user_1, test_fixture_us
     assert res.status_code == 404
     assert res.json() == {
         'detail': f'session_id: {data["session_id"]} with step_count: {data["step_count"]} doesnt exist'}
-
-    # TODO
-    # test -> can't update the step_count of a session, if step_count already exists for the session
-    # already existing -> session_id = 3448, step_count = 1.
-    # trying again with same -> session_id = 3448, step_count = 1.
-
-    # "ticks": [-96.33, -96.33, -93.47, -89.03999999999999, -84.61, -80.18, -75.75, -71.32, -66.89, -62.46, -58.03, -53.6,
-    #           -49.17, -44.74, -40.31],
-    # "selected_tick": 5,
-    # "session_id": 3448,
-    # "step_count": 1}
