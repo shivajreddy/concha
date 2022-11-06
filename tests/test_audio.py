@@ -51,7 +51,6 @@ def test_audio_get_all_by_userid(test_fixture_audio_1, test_fixture_user_1_token
     assert len(res.json()[0]["ticks"]) == 15
 
 
-# TODO search all by session_id
 # noinspection DuplicatedCode
 def test_audio_get_all_by_sessionid(client, test_fixture_user_1_token):
     url = base_url + '/audio-data/search/sessionid'
@@ -90,7 +89,6 @@ def test_audio_get_all_by_sessionid(client, test_fixture_user_1_token):
 
     # test -> should return a list for correct session_id.
     res = client.get(url=base_url + '/audio-data/all')
-    print("res-get-all=", res, res.json())
     assert res.status_code == 200
     assert isinstance(res.json(), list)
 

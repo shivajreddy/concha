@@ -119,5 +119,5 @@ Google Cloud Platform: [GCP](https://cloud.google.com/)
 
 ## API Endpoints
 
-TODO, document all end points  
-TODO, mention how to use /docs  
+- [ ] document all end points  
+- [ ] mention how to use /docs  
