@@ -9,9 +9,8 @@ from server.database import get_db, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# TODO -> make a PSQL container for testing
-# DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.test_database_name}"
-DATABASE_URL = "postgresql://postgres:2106@localhost/conchadb_test"
+DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
+# DATABASE_URL = "postgresql://postgres:2106@localhost/conchadb_test"
 
 engine = create_engine(DATABASE_URL)
 
