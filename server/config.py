@@ -11,9 +11,8 @@ class Settings(BaseSettings):
     server_port: int = 8000
     secret_key: str = ""
     algorithm: str = ""
-    access_token_expire_minutes: int = 30
+    access_token_expire_minutes: int = 60
     base_url_dev: str = ""
-    base_url_test: str = ""
     base_url_prod: str = ""
 
     # Get the Environment variables from the .env file

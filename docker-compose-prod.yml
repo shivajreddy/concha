@@ -1,14 +1,15 @@
 version: "3.3"
 services:
   server:
-    image: shivajreddy/concha-api:latest
-    depends_on:
-      - postgres
+    build: .
+    # image: shivajreddy/concha-api:latest
     ports:
       - "80:${SERVER_PORT}"
     env_file:
       - ./.env
-    command: bash -c "uvicorn server:app --host ${SERVER_ADDRESS} --port ${SERVER_PORT} --reload"
+
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres
