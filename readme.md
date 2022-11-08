@@ -1,11 +1,11 @@
 # Concha API
 
+[![Build and Deploy Code 🚀](https://github.com/shivajreddy/concha/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/shivajreddy/concha/actions/workflows/build-deploy.yml)
 
 ## About the Concha API
 This documentation describes how to use the Concha API using production deployment, Postman, or cURL.  
 When you make a request to the REST API, you will specify an HTTP method and a path that follow a specific schema. Additionally, you might also specify request headers and path, query, or body parameters (Ex. Authorization info in header for protected routes). The API will return the response status code, response headers, and potentially a response body.
 
-[![Build and Deploy Code 🚀](https://github.com/shivajreddy/concha/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/shivajreddy/concha/actions/workflows/build-deploy.yml)
 
 ##### Table of Contents  
 [01. Scope of Project](#Scope)  
@@ -197,3 +197,24 @@ To make a request, first find the HTTP method and the path(end point) for the op
 ```
 Description: search for a user in the DB using either name or email but not both
 
+## Documentation
+
+Postman Concha 
+Postman collection for /audio-data end point [Postman audio-data collection](https://www.getpostman.com/collections/5ada7da1c75e1ad7cc81)  
+Postman collection for /auth end point [Postman auth collection](https://www.getpostman.com/collections/cefb8ad9a8513c692225)  
+Postman collection for /user end point [Postman user collection](https://www.getpostman.com/collections/2f97397caccc6b3b3bbd)  
+
+## Future updates
+
+- [ ] Incorporate declarative containers using [Dependency Injector](https://python-dependency-injector.ets-labs.org/examples/application-multiple-containers.html) when application goes large scale 
+
+- [ ] Logging
+
+- [ ] 
+
+### References
+
+- https://fastapi.tiangolo.com/
+- https://pydantic-docs.helpmanual.io/
+- https://www.sqlalchemy.org/
+- https://cloud.google.com/compute/docs/instances
