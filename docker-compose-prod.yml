@@ -1,8 +1,7 @@
 version: "3.3"
 services:
   server:
-    build: .
-    # image: shivajreddy/concha-api:latest
+    image: shivajreddy/concha-api:latest
     ports:
       - "80:${SERVER_PORT}"
     env_file:
