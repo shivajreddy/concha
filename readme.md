@@ -1,5 +1,10 @@
 # Concha API
 
+
+## About the Concha API
+This documentation describes how to use the Concha API using production deployment, Postman, or cURL.  
+When you make a request to the REST API, you will specify an HTTP method and a path that follow a specific schema. Additionally, you might also specify request headers and path, query, or body parameters (Ex. Authorization info in header for protected routes). The API will return the response status code, response headers, and potentially a response body.
+
 [![Build and Deploy Code 🚀](https://github.com/shivajreddy/concha/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/shivajreddy/concha/actions/workflows/build-deploy.yml)
 
 ##### Table of Contents  
@@ -174,19 +179,14 @@ alembic upgrade head
 #### Step x : Running Tests on the server
 This project has Github action as part of CI/CD to automatically run all the tests on a linux machine provided by GitHub, by using the GitHub action. The build sequence is written in 'build-deploy.yml' file, which can be found at `.github/workflows/build-deploy.yml` in your project source directory.
 
-## About the Concha API
-This documentation describes how to use the Concha API using production deployment, Postman, or cURL.
-
-When you make a request to the REST API, you will specify an HTTP method and a path that follow a specific schema. Additionally, you might also specify request headers and path, query, or body parameters (Ex. Authorization info in header for protected routes). The API will return the response status code, response headers, and potentially a response body.
 
 ## Making a request
 To make a request, first find the HTTP method and the path(end point) for the operation that you want to use. For example, the "Get all Users" operation uses the `GET` method and the `{base-url}/user/all` path.
 
 ## API Endpoints
 
-TODO Show how to read and use swagger ui
+- [ ] Show how to read and use swagger ui, mention how to use /docs
 
-TODO, mention how to use /docs
 | *Method* | *Endpoint* | Query params | Form-data   | Description                                        |
 |:--------: |:---------- | :------------: | :-----------: | :-------------------------------------------------- |
 | GET      | /user/all  | No | no | example description alskdfjalksjdflasjdflkasjdfklj |
